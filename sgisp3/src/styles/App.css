@@ -1,0 +1,73 @@
+/* GLASS CONTAINER (main) debajo del header */
+/* MAIN con logo como sello de agua */
+.main-background {
+  min-height: calc(100vh - 140px);
+  /* Ajusta según altura del header/footer */
+  position: relative;
+}
+
+/* Logo watermark */
+.main-background::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/public/img/logo_sgisp.png');
+  /* Ruta según tu carpeta public */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 400px;
+  /* ajusta el tamaño del sello */
+  opacity: 0.15;
+  /* transparencia suave estilo sello */
+  z-index: 5;
+  pointer-events: none;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+/* Estilo para el logo en la página Home: limita ancho y mantiene responsividad */
+.home-logo {
+  max-width: 360px;
+  /* reducir tamaño en pantallas grandes */
+  width: 60%;
+  /* en pantallas pequeñas ocupará hasta 60% */
+  height: auto;
+}
+
+@media (min-width: 768px) {
+  .home-logo {
+    width: auto;
+  }
+}
+
+.glass-container {
+  flex-grow: 1;
+  width: 100%;
+  opacity: 70%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(18px);
+  /* Difuminado macOS */
+  -webkit-backdrop-filter: blur(18px);
+
+  border-radius: 20px;
+  /* Bordes redondeados */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* Borde estilo vidrio */
+
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  /* Sombra suave */
+  position: relative;
+  z-index: 2;
+  /* debe ser BAJO */
+  overflow: visible;
+}

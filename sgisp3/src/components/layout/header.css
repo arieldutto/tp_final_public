@@ -1,0 +1,63 @@
+/* HEADER por encima del glass-container */
+header,
+.glass-nav {
+    position: relative;
+    z-index: 10050;
+}
+
+/* Dropdown arriba de todo */
+.glass-nav .dropdown-menu {
+    position: absolute;
+    /* FUNDAMENTAL */
+    z-index: 10100 !important;
+    overflow: visible;
+}
+
+/* Previene recortes del dropdown */
+nav,
+.navbar,
+.navbar-collapse,
+.container-fluid {
+    overflow: visible !important;
+}
+
+.glass-nav {
+    background: rgba(255, 255, 255, 0.15);
+    /* Transparente estilo vidrio */
+    backdrop-filter: blur(12px);
+    /* Difuminado macOS */
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 18px;
+    /* Bordes redondeados */
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    /* Borde definido pero elegante */
+    margin: 10px;
+    padding: 6px 12px;
+
+    /* Para levantar la navbar visualmente */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Para que el brand no quede tan apretado */
+.glass-nav .navbar-brand {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Para mejorar visibilidad de los links */
+.glass-nav .nav-link {
+    color: white !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.glass-nav .dropdown-menu {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.icon-user {
+    font-size: 1.2rem;
+    /* Ajustá a tu gusto */
+    color: #fff;
+}

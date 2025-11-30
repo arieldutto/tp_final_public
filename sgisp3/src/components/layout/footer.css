@@ -1,0 +1,44 @@
+.glass-footer {
+    background: rgba(255, 255, 255, 0.15);
+    /* Transparente estilo vidrio */
+    backdrop-filter: blur(12px);
+    /* Difuminado macOS */
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 18px;
+    /* Bordes redondeados */
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    /* Borde definido pero elegante */
+    margin: 10px;
+    padding: 6px 12px;
+
+    /* Para levantar la navbar visualmente */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-footer .row {
+    padding-top: 10px;
+}
+
+.glass-footer .footer-copyright {
+    color: #fff !important;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.glass-footer a {
+    color: #c6cedc !important;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.glass-footer a:hover {
+    color: #d6f5ff !important;
+    /* Color hover */
+    text-decoration: underline;
+}
+
+.glass-footer .col-md-4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
