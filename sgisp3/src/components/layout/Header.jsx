@@ -1,5 +1,5 @@
 import React from 'react'
-import "./Header.css"
+import "./header.css"
 import DropdownMenu from '../DropdownMenu'
 function Header() {
     return (
