@@ -19,7 +19,7 @@ export default function AbonadosPage() {
     return (
         <div className="container py-4">
 
-            <h2 className="mb-3">Clientes (CRM)</h2>
+            <h2 className="mb-3 text-ligth">Clientes (CRM)</h2>
 
             <input
                 type="text"
