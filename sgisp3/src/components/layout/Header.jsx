@@ -20,7 +20,8 @@ function Header() {
                                     title="Abonados"
                                     items={[
                                         { label: "Crear Abonado", href: "/clientes" },
-                                        { label: "Listado de Abonados", href: "/clientes" }
+                                        { label: "Listado de Abonados", href: "/clientes" },
+                                        { label: "Clientes Cards", href: "/clientescard" }
                                     ]}
                                 />
                                 <DropdownMenu

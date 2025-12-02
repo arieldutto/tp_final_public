@@ -6,8 +6,9 @@ import PublicHome from "./pages/PublicHome";
 import RequireAuth from "./features/auth/RequireAuth";
 import MainLayout from "./layouts/MainLayout";
 import OntsListPage from "./features/onts/pages/OntsListPage";
-import ClientesList from "./features/crm/ClientesList";
+import ClientesList from "./features/crm/pages/ClientesList";
 import DashboardServer from "./features/server/pages/DashboardServer";
+import AbonadosPage from "./features/crm/pages/AbonadoPages";
 
 export const router = createBrowserRouter([
     //Rutas Publicas
@@ -75,7 +76,17 @@ export const router = createBrowserRouter([
                         element: <DashboardServer />
                     }
                 ]
-            }
+            },
+            {
+                path: "/clientescard",
+                element: <MainLayout />,
+                children: [
+                    {
+                        index: true,
+                        element: <AbonadosPage />
+                    }
+                ]
+            },
 
         ]
     },

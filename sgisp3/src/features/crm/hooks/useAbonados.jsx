@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API_SGISP } from "../config";
+import { API_SGISP } from "../../../config";
 export function useAbonados() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);

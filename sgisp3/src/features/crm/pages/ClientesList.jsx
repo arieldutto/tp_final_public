@@ -1,6 +1,6 @@
 import React from "react";
-import { useAbonados } from "../../hooks/useAbonados";
-import DataList from "../../components/DataList";
+import { useAbonados } from "../hooks/useAbonados";
+import DataList from "../../../components/DataList";
 
 export default function ClientesList() {
     const { data, loading, error } = useAbonados();
