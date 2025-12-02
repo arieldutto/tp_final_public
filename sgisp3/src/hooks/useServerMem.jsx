@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { API_SGISP } from "../config";
 export function useServerMem() {
     const [data, setData] = useState([]);
 
@@ -7,7 +7,7 @@ export function useServerMem() {
 
         const fetchData = async () => {
             try {
-                const r = await fetch("http://10.80.6.2/sgisp_dev/api/servermem.json");
+                const r = await fetch(`${API_SGISP}/servermem.json`);
                 let json = await r.json();
 
                 console.log("RESPUESTA API:", json);
