@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { API_SGISP } from "../config";
 export function useAbonados() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ export function useAbonados() {
     ];
 
     useEffect(() => {
-        fetch("http://10.80.6.2/sgisp_dev/api/abonados")
+        fetch(`${API_SGISP}/abonados`)
             .then((res) => res.json())
             .then((json) => {
                 // json es un array de objetos → ordenamos cada fila
