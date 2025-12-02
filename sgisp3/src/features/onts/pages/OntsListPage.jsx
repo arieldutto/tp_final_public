@@ -1,5 +1,5 @@
 import React from 'react'
-import OntsCard from '../components/ontsCard'
+import OntsCard from '../components/OntsCard'
 import DataList from '../../../components/DataList';
 const personas = [
     { Id: 1, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
