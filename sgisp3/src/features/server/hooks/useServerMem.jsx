@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { API_SGISP } from "../config";
+import { API_SGISP } from "../../../config";
 export function useServerMem() {
     const [data, setData] = useState([]);
 

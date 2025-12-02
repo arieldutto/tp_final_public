@@ -1,7 +1,7 @@
 import React from 'react'
 import GraficoConsumo from '../../components/GraficoConsumo'
-import { useServerCpu } from "../../hooks/useServerCpu"
-import { useServerMem } from '../../hooks/useServerMem'
+import { useServerCpu } from "./hooks/useServerCpu"
+import { useServerMem } from './hooks/useServerMem'
 import CardBase from '../../components/CardBase'
 function DashboardServer() {
     return (
