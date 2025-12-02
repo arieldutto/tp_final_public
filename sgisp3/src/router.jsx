@@ -7,7 +7,7 @@ import RequireAuth from "./features/auth/RequireAuth";
 import MainLayout from "./layouts/MainLayout";
 import OntsListPage from "./features/onts/pages/OntsListPage";
 import ClientesList from "./features/crm/ClientesList";
-import DashboardServer from "./features/server/DashboardServer";
+import DashboardServer from "./features/server/pages/DashboardServer";
 
 export const router = createBrowserRouter([
     //Rutas Publicas
