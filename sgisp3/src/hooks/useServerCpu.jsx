@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_SGISP } from "../config";
 
 export function useServerCpu() {
     const [data, setData] = useState([]);
@@ -7,7 +8,7 @@ export function useServerCpu() {
 
         const fetchData = async () => {
             try {
-                const r = await fetch("http://10.80.6.2/sgisp_dev/api/servercpu.json");
+                const r = await fetch(`${API_SGISP}/servercpu.json`);
                 let json = await r.json();
 
                 console.log("RESPUESTA API:", json);
