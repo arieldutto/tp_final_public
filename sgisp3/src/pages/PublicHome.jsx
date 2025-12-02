@@ -1,6 +1,6 @@
 // src/pages/PublicHome.jsx
 import React from "react";
-import "../styles/publicHome.css";
+import "../styles/publichome.css";
 // Si tu login está en features/auth/pages:
 import Login from "../features/auth/pages/Login";
 
