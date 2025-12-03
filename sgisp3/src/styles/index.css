@@ -85,3 +85,9 @@ body::before {
   background-image: url('https://grainy-gradients.vercel.app/noise.svg');
   opacity: 0.06;
 }
+
+/* Fondo con efecto Glass para usar en distintos elementos */
+.bg-glass {
+  backdrop-filter: blur(10px);
+  background-color: rgba(126, 119, 247, 0.166);
+}

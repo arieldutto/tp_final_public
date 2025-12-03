@@ -23,7 +23,7 @@ export default function AbonadosPage() {
 
             <input
                 type="text"
-                className="form-control mb-3"
+                className="form-control mb-3 rounded-4  bg-transparent bg-glass "
                 placeholder="Buscar cliente..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}

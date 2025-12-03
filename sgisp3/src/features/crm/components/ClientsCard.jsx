@@ -1,9 +1,11 @@
+import './clientscard.css'
+
 function ClientsCard({ cliente }) {
     return (
         <>
-            <div className="card shadow-sm  my-2 h-100 border-primary border-1 rounded-5 bg-transparent">
+            <div className="card shadow-sm  my-2 h-100   rounded-4 bg-transparent card-glow">
 
-                <h5 className="card-header d-flex align-items-center bg-primary rounded-top-5 text-light">
+                <h5 className="card-header d-flex align-items-center bg-primary rounded-top-4 text-light">
                     <i className="bi bi-person me-2"></i>
                     {cliente.Razonsocial}
                 </h5>
