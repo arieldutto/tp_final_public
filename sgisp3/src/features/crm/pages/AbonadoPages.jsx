@@ -17,7 +17,7 @@ export default function AbonadosPage() {
     );
 
     return (
-        <div className="container py-4">
+        <div className="container py-4 bg-opacity-25">
 
             <h2 className="mb-3 text-light">Clientes (CRM)</h2>
 
@@ -29,9 +29,9 @@ export default function AbonadosPage() {
                 onChange={(e) => setSearch(e.target.value)}
             />
 
-            <div className="row">
+            <div className="row bg-opacity-25">
                 {filtrados.map((cliente) => (
-                    <div key={cliente.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div key={cliente.id} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                         <ClientsCard cliente={cliente} />
                     </div>
                 ))}
