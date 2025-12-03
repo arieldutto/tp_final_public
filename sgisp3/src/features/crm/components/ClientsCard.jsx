@@ -1,19 +1,19 @@
 function ClientsCard({ cliente }) {
     return (
         <>
-            <div className="card shadow-sm  my-2 h-100 border-primary border-2 rounded-5 bg-opacity-50">
+            <div className="card shadow-sm  my-2 h-100 border-primary border-1 rounded-5 bg-transparent">
 
                 <h5 className="card-header d-flex align-items-center bg-primary rounded-top-5 text-light">
                     <i className="bi bi-person me-2"></i>
                     {cliente.Razonsocial}
                 </h5>
 
-                <p className="card-text p-2">
+                <p className="card-text p-2 text-light">
                     <i className="bi bi-geo-alt me-2"></i>
                     {cliente.Domicilio} - {cliente.Localidad}
                 </p>
 
-                <p className="card-text p-2">
+                <p className="card-text p-2 text-light">
                     <i className="bi bi-telephone me-2"></i>
                     {cliente.Telefono || "Sin teléfono"}
                 </p>
