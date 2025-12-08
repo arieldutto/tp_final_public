@@ -28,9 +28,6 @@ body {
   padding: 0;
   background: radial-gradient(circle at top, #1e2633 0%, #0f141b 40%, #090c10 100%);
   background-attachment: fixed;
-  /*display: flex; */
-  /*place-items: center;*/
-  /* min-width: 320px; */
   min-height: 100vh;
 }
 

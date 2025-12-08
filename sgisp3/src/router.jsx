@@ -1,3 +1,4 @@
+// Configuracion de Ruteo con rutas Publicas y Rutas privadas
 import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
 import PublicLayout from "./layouts/PublicLayout";

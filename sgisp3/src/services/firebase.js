@@ -1,4 +1,4 @@
-// src/services/firebase.js
+// Servicio de autenticación de firebase
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
