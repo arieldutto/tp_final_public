@@ -1,7 +1,21 @@
 import React from 'react'
 import "./header.css"
 import DropdownMenu from '../DropdownMenu'
+import { signOut } from "firebase/auth";
+import { useAuth } from "../../context/AuthContext";
+import { auth } from '../../services/firebase';
+
 function Header() {
+    const { user } = useAuth();
+    const handleLogout = () => {
+        signOut(auth)
+            .then(() => {
+                console.log("Sesión cerrada.");
+            })
+            .catch(error => {
+                console.error("Error al cerrar sesión:", error);
+            });
+    };
     return (
         <>
             <header>
@@ -63,11 +77,11 @@ function Header() {
                             </ul>
                             <div className='end'>
                                 <DropdownMenu
-                                    title="Usuario"
+                                    title={user ? user.email : "Usuario"}
                                     items={[
-                                        { label: "Log In", href: "/materiales" },
-                                        { label: "Sig In", href: "/movimientos" },
-                                        { label: "Configuraciones", href: "/movimientos" }
+                                        { label: "Log In", href: "/" },
+                                        { label: "Sig In", href: "/" },
+                                        { label: "Cerrar Sessión", action: handleLogout }
                                     ]}
                                     icon="bi-person-circle"
                                 />
