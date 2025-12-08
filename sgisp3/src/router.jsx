@@ -9,6 +9,7 @@ import OntsListPage from "./features/onts/pages/OntsListPage";
 import ClientesList from "./features/crm/pages/ClientesList";
 import DashboardServer from "./features/server/pages/DashboardServer";
 import AbonadosPage from "./features/crm/pages/AbonadoPages";
+import AbonadoDetallePage from "./features/crm/pages/AbonadoDetallePage";
 
 export const router = createBrowserRouter([
     //Rutas Publicas
@@ -74,6 +75,16 @@ export const router = createBrowserRouter([
                     {
                         index: true,
                         element: <DashboardServer />
+                    }
+                ]
+            },
+            {
+                path: "/clientes/detalles/:id",
+                element: <MainLayout />,
+                children: [
+                    {
+                        index: true,
+                        element: <AbonadoDetallePage />
                     }
                 ]
             },
