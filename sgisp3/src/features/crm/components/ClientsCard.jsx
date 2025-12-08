@@ -18,11 +18,7 @@ function ClientsCard({ cliente, onOpen }) {
         <>
             <div
                 className="card shadow-sm my-2 h-100 rounded-4 bg-transparent card-glow"
-
-                // Cuando hago doble click llamo a mi función interna
                 onDoubleClick={handleDoubleClick}
-
-                // Le pongo cursor pointer para que sea obvio que es clickeable
                 style={{ cursor: "pointer" }}
             >
                 {/* Encabezado de la tarjeta */}
