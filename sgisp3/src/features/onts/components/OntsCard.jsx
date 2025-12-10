@@ -1,4 +1,5 @@
 import React from 'react'
+import './ontscard.css'
 
 function OntsCard({
     titulo = "Sin Titulo",
@@ -29,8 +30,8 @@ function OntsCard({
                         {icono}
                     </div>
                 )}
-                <h5 className='card-text text-light'>{textLine1}</h5>
-                <p className='card-text text-light'>{textLine2}</p>
+                <div className='ont-card-number text-light'>{textLine1}</div>
+                <p className='card-text text-light mt-2'>{textLine2}</p>
             </div>
         </div>
     )

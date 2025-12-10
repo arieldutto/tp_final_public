@@ -38,7 +38,7 @@ function ClientsDetail({ idCliente }) {
                 return <ClientInfo datos={cliente} idCliente={idCliente} />;
             case "servicios":
                 // Le pasamos los datos si los necesita
-                return <ClientServices numclient={cliente?.NumeroCliente} />;
+                return <ClientServices numclient={idCliente} />;
             case "ont":
                 // Le pasamos el idCliente
                 return <ClientOntData ont_serial={serie} />;

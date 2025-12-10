@@ -4,6 +4,7 @@ export default function DataList({
     data = [],
     itemsPerPage = 10,
     titulo = "",
+    getRowClassName = null,
 }) {
 
     const [search, setSearch] = useState("");
@@ -88,13 +89,16 @@ export default function DataList({
                     </thead>
 
                     <tbody className="rounded-4">
-                        {paginated.map((row, index) => (
-                            <tr key={index}>
-                                {Object.values(row).map((val, i) => (
-                                    <td key={i}>{val}</td>
-                                ))}
-                            </tr>
-                        ))}
+                        {paginated.map((row, index) => {
+                            const rowClassName = getRowClassName ? getRowClassName(row) : '';
+                            return (
+                                <tr key={index} className={rowClassName}>
+                                    {Object.values(row).map((val, i) => (
+                                        <td key={i}>{val}</td>
+                                    ))}
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>

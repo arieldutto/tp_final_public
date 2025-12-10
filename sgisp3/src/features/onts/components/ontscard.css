@@ -1,0 +1,44 @@
+/* Estilo tipo reloj Apple para los números en las cards */
+.ont-card-number {
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 0.5rem 0;
+    display: block;
+    text-align: center;
+    width: 100%;
+    text-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.28),
+        0 0 7px rgba(255, 255, 255, 0.21),
+        0 0 10px rgba(255, 255, 255, 0.14),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+    filter: brightness(1.07) drop-shadow(0 0 3px rgba(255, 255, 255, 0.21));
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Efecto sutil al hover */
+.ont-card-number:hover {
+    transform: scale(1.05);
+    filter: brightness(1.14) drop-shadow(0 0 5px rgba(255, 255, 255, 0.28));
+    text-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.35),
+        0 0 8px rgba(255, 255, 255, 0.28),
+        0 0 12px rgba(255, 255, 255, 0.21),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive: ajustar tamaño en pantallas más pequeñas */
+@media (max-width: 768px) {
+    .ont-card-number {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .ont-card-number {
+        font-size: 1.4rem;
+    }
+}
+

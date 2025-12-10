@@ -1,33 +1,65 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import OntsCard from '../components/OntsCard'
 import DataList from '../../../components/DataList';
-const personas = [
-    { Id: 1, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 2, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 3, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 4, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 5, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 6, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 7, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 8, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 9, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 10, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 11, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-    { Id: 12, status: true, Abonado: "Abonado 1", Reporte: "2025-11-21 23:07:57", Productclass: "DN-HG8421A", Serie: "4857544396215740", Potencia: "-19.14 dbm", link: "ref" },
-];
+import { useOntAcsApi } from '../hooks/useOntAcsApi';
+import '../styles/ontslist.css';
 
 function OntsListPage() {
+    const { statusBar, ontsList, loading, error } = useOntAcsApi();
+
+    // Función para calcular el porcentaje
+    const calcularPorcentaje = (cantidad, total) => {
+        if (!total || total === 0) return 0;
+        return ((cantidad / total) * 100).toFixed(1);
+    };
+
+    // Valores por defecto mientras carga o si hay error
+    const statusData = statusBar || {
+        unregister: 0,
+        register: 0,
+        devil: 0,
+        offline: 0,
+        contador: 0
+    };
+
+    const total = statusData.contador || 0;
+
+    // Mapear los datos de la API al formato esperado por DataList
+    const ontsDataFormatted = useMemo(() => {
+        return ontsList.map(ont => ({
+            Id: ont.id,
+            Abonado: ont.abonado || 'Sin asignar',
+            Estado: ont.RX_Estado === 'success' ? 'En línea' : ont.RX_Estado === 'danger' ? 'Señal baja' : 'Desconocido',
+            Productclass: ont.productclass || '-',
+            Serie: ont.serialnumber || '-',
+            Potencia: ont.RX_Power !== null && ont.RX_Power !== undefined
+                ? `${ont.RX_Power.toFixed(2)} dbm`
+                : '-',
+            Reporte: ont.ont_lastinform_local || '-'
+        }));
+    }, [ontsList]);
+
     return (
         <>
             <div className="container p-4">
+                {loading && (
+                    <div className="text-center text-light mb-4">
+                        <p>Cargando datos...</p>
+                    </div>
+                )}
+                {error && (
+                    <div className="alert alert-danger" role="alert">
+                        Error al cargar los datos: {error}
+                    </div>
+                )}
                 <div className="row g-4 justify-content-center">
 
                     <div className="col-12 col-sm-6 col-md-4 col-lg-3">
                         <OntsCard
                             titulo='ONT Sin Registrar'
                             tipo='primary'
-                            textLine1='0'
-                            textLine2='% de Equipos: 0.0'
+                            textLine1={statusData.unregister?.toString() || '0'}
+                            textLine2={`% de Equipos: ${calcularPorcentaje(statusData.unregister || 0, total)}`}
                             icono={<i className="bi bi-info-circle-fill"></i>}
                         />
                     </div>
@@ -36,8 +68,8 @@ function OntsListPage() {
                         <OntsCard
                             titulo='ONT ON Line'
                             tipo='success'
-                            textLine1='0'
-                            textLine2='% de Equipos: 0.0'
+                            textLine1={statusData.register?.toString() || '0'}
+                            textLine2={`% de Equipos: ${calcularPorcentaje(statusData.register || 0, total)}`}
                             icono={<i className="bi bi-check-circle-fill"></i>}
                         />
                     </div>
@@ -46,8 +78,8 @@ function OntsListPage() {
                         <OntsCard
                             titulo='ONT Señal Insuficiente'
                             tipo='warning'
-                            textLine1='0'
-                            textLine2='% de Equipos: 0.0'
+                            textLine1={statusData.devil?.toString() || '0'}
+                            textLine2={`% de Equipos: ${calcularPorcentaje(statusData.devil || 0, total)}`}
                             icono={<i className="bi bi-exclamation-triangle-fill"></i>}
                         />
                     </div>
@@ -56,8 +88,8 @@ function OntsListPage() {
                         <OntsCard
                             titulo='Ont Fuera de Linea'
                             tipo='danger'
-                            textLine1='0'
-                            textLine2='% de Equipos: 0.0'
+                            textLine1={statusData.offline?.toString() || '0'}
+                            textLine2={`% de Equipos: ${calcularPorcentaje(statusData.offline || 0, total)}`}
                             icono={<i className="bi bi-radioactive"></i>}
                         />
                     </div>
@@ -65,7 +97,22 @@ function OntsListPage() {
                 </div>
             </div>
             <div className="container mt-5">
-                <DataList data={personas} itemsPerPage={5} titulo='Listado de ONT' />
+                {loading ? (
+                    <div className="text-center text-light">
+                        <p>Cargando listado de ONTs...</p>
+                    </div>
+                ) : error ? (
+                    <div className="alert alert-danger" role="alert">
+                        Error al cargar el listado: {error}
+                    </div>
+                ) : (
+                    <DataList
+                        data={ontsDataFormatted}
+                        itemsPerPage={10}
+                        titulo='Listado de ONT'
+                        getRowClassName={(row) => row.Estado === 'Señal baja' ? 'table-danger ont-signal-low' : ''}
+                    />
+                )}
             </div>
         </>
     )
