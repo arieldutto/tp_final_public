@@ -36,7 +36,7 @@ export default function Login() {
                 <div className='login-card'>
                     <h2 className="text-center mb-4">Acceso al Sistema</h2>
                     <form className="row g-3" onSubmit={handleSubmit}>
-                        <label for="staticEmail2" className="">Email</label>
+                        <label htmlFor="staticEmail2" className="">Email</label>
                         <input
                             type="email"
                             className="form-control"
@@ -47,10 +47,10 @@ export default function Login() {
                             required
                         >
                         </input>
-                        <label for="inputPassword2" className="">Password</label>
+                        <label htmlFor="inputPassword2" className="">Password</label>
                         <input
                             type="password"
-                            class="form-control"
+                            className="form-control"
                             id="inputPassword2"
                             placeholder="Password"
                             value={password}

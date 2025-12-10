@@ -12,7 +12,6 @@ import ClientOntData from "./ClientOntData";
 
 function ClientsDetail({ idCliente }) {
     // Llamo al hooks para traer los datos del cliente
-    //const { cliente: datos, loading, error } = useCliente(idCliente);
     const { infocliente, loading, error } = useClienteCompleto(idCliente);
 
     // Estado para manejar las tabs 
