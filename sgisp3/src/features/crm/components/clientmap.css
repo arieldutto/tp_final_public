@@ -1,0 +1,38 @@
+/* Estilos para el mapa del cliente */
+.client-map-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.client-map-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.client-map-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+}
+
+.client-map-header h5 {
+    color: white;
+    font-weight: 600;
+    margin: 0;
+}
+
+.client-map-card .card-footer {
+    padding: 0.75rem 1.5rem;
+    background: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .client-map-card {
+        margin-top: 1.5rem;
+    }
+}

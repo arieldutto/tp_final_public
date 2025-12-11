@@ -7,6 +7,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
+import { TelegramAlertProvider } from './context/TelegramAlertContext.jsx'
 
 import './styles/index.css'
 import { router } from './router.jsx'
@@ -14,7 +15,9 @@ import { router } from './router.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <TelegramAlertProvider>
+        <RouterProvider router={router} />
+      </TelegramAlertProvider>
     </AuthProvider>
   </StrictMode >,
 )

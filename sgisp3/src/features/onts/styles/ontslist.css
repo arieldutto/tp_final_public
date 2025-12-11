@@ -1,10 +1,13 @@
 /* Animación de parpadeo para ONTs con señal baja (devil) */
 @keyframes blink-warning {
-    0%, 100% {
+
+    0%,
+    100% {
         background-color: #fff3cd;
         box-shadow: 0 0 8px rgba(255, 193, 7, 0.6);
         border-left-color: #ffc107;
     }
+
     50% {
         background-color: #ffeb3b;
         box-shadow: 0 0 20px rgba(255, 193, 7, 1);
@@ -29,4 +32,3 @@
 .ont-signal-low:hover td {
     color: #5a0000 !important;
 }
-

@@ -1,11 +1,187 @@
-.card.card-glow {
-    border: 1px solid #0d6efd;
-    box-shadow: 0 0 10px rgba(11, 19, 225, 0.436);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+/* Tarjeta de cliente con estilo glassmorphism - Optimizado para rendimiento */
+.client-card {
+    position: relative;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    
+    /* Glassmorphism base - Optimizado */
+    background: linear-gradient(
+        135deg,
+        rgba(103, 163, 255, 0.35) 0%,
+        rgba(75, 132, 255, 0.30) 100%
+    );
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-.card.card-glow:hover {
-    transform: scale(1.05);
-    /* ← se agranda un 5% */
-    box-shadow: 0 0 20px rgba(253, 13, 21, 0.9) !important;
+.client-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 6px 20px rgba(67, 97, 238, 0.3);
+}
+
+.client-card:active {
+    transform: translateY(0);
+}
+
+/* Header de la tarjeta - Optimizado */
+.client-card-header {
+    position: relative;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(
+        135deg,
+        rgba(67, 97, 238, 0.55) 0%,
+        rgba(103, 163, 255, 0.50) 100%
+    );
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.client-card-header-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.client-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.client-card-icon i {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.client-card-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Cuerpo de la tarjeta */
+.client-card-body {
+    position: relative;
+    padding: 1.25rem 1.5rem;
+}
+
+/* Items de información - Optimizado */
+.client-card-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.client-card-item:last-of-type {
+    border-bottom: none;
+}
+
+.client-card-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.client-card-item-icon i {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.client-card-item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.client-card-item-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.client-card-item-value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Footer con badge - 15% más sólido */
+.client-card-footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+}
+
+.client-card-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(
+        135deg,
+        rgba(67, 97, 238, 0.45) 0%,
+        rgba(103, 163, 255, 0.40) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .client-card-header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .client-card-body {
+        padding: 1rem 1.25rem;
+    }
+    
+    .client-card-title {
+        font-size: 1rem;
+    }
+    
+    .client-card-icon {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .client-card-icon i {
+        font-size: 1.1rem;
+    }
 }

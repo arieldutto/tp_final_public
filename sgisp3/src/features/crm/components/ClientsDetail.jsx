@@ -39,7 +39,7 @@ function ClientsDetail({ idCliente }) {
                 // Le pasamos los datos si los necesita
                 return <ClientServices numclient={idCliente} />;
             case "ont":
-                // Le pasamos el idCliente
+                // Le pasamos el serial de la ONT
                 return <ClientOntData ont_serial={serie} />;
             default:
                 return null;
@@ -52,42 +52,46 @@ function ClientsDetail({ idCliente }) {
                     Detalles del Cliente: {cliente?.Razonsocial}
                 </h2>
 
-                <div className="card shadow-lg rounded-4 p-4 bg-light bg-opacity-75">
-                    {/*Navegación con pestañas  */}
-                    <ul className="nav nav-tabs">
-                        <li className="nav-item">
-                            <a
-                                href="#"
-                                className={`nav-link ${activeTab === "info" ? "active" : ""}`}
-                                onClick={() => setActiveTab("info")}
-                            >
-                                Info
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a
-                                href="#"
-                                className={`nav-link ${activeTab === "servicios" ? "active" : ""}`}
-                                onClick={() => setActiveTab("servicios")}
-
-                            >
-                                Servicios
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a
-                                href="#"
-                                className={`nav-link ${activeTab === "ont" ? "active" : ""}`}
-                                onClick={() => setActiveTab("ont")}
-
-                            >
-                                ONT
-                            </a>
-                        </li>
-                    </ul>
+                <div className="client-detail-card">
+                    {/*Navegación con pestañas con estilo glassmorphism */}
+                    <div className="client-detail-tabs">
+                        <button
+                            type="button"
+                            className={`client-detail-tab ${activeTab === "info" ? "active" : ""}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setActiveTab("info");
+                            }}
+                        >
+                            <i className="bi bi-info-circle me-2"></i>
+                            Info
+                        </button>
+                        <button
+                            type="button"
+                            className={`client-detail-tab ${activeTab === "servicios" ? "active" : ""}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setActiveTab("servicios");
+                            }}
+                        >
+                            <i className="bi bi-wifi me-2"></i>
+                            Servicios
+                        </button>
+                        <button
+                            type="button"
+                            className={`client-detail-tab ${activeTab === "ont" ? "active" : ""}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setActiveTab("ont");
+                            }}
+                        >
+                            <i className="bi bi-router me-2"></i>
+                            ONT
+                        </button>
+                    </div>
 
                     {/*Tabs con el contenido */}
-                    <div className="tab-content p-3">
+                    <div className="client-detail-content">
                         {/* renderizamos el contenido activo */}
                         {renderTabContent()}
                     </div>

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import OntsCard from '../components/OntsCard'
 import DataList from '../../../components/DataList';
 import { useOntAcsApi } from '../hooks/useOntAcsApi';
+import TelegramAlertButton from '../components/TelegramAlertButton';
 import '../styles/ontslist.css';
 
 function OntsListPage() {
@@ -106,12 +107,15 @@ function OntsListPage() {
                         Error al cargar el listado: {error}
                     </div>
                 ) : (
-                    <DataList
-                        data={ontsDataFormatted}
-                        itemsPerPage={10}
-                        titulo='Listado de ONT'
-                        getRowClassName={(row) => row.Estado === 'Señal baja' ? 'table-danger ont-signal-low' : ''}
-                    />
+                    <>
+                        <TelegramAlertButton ontsList={ontsList} />
+                        <DataList
+                            data={ontsDataFormatted}
+                            itemsPerPage={10}
+                            titulo='Listado de ONT'
+                            getRowClassName={(row) => row.Estado === 'Señal baja' ? 'table-danger ont-signal-low' : ''}
+                        />
+                    </>
                 )}
             </div>
         </>

@@ -1,2 +1,5 @@
+VITE_API_SGISP=tu_url_de_api_aqui
 
-VITE_API_SGISP
+# Configuración de Telegram (opcional)
+VITE_TELEGRAM_BOT_TOKEN=tu_bot_token_aqui
+VITE_TELEGRAM_CHAT_ID=tu_chat_id_aqui

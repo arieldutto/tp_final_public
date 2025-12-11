@@ -1,0 +1,341 @@
+/* Estilos para la información de ONT */
+.client-ont-container {
+    padding: 0;
+}
+
+.client-ont-container .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+}
+
+.client-ont-container .row > [class*="col-"] {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.client-ont-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+}
+
+.client-ont-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.client-ont-card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.client-ont-card .card-body > * {
+    flex: 1;
+}
+
+.client-ont-header {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+    flex-shrink: 0;
+}
+
+.client-ont-header-signal {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    flex-shrink: 0;
+}
+
+.client-ont-header-stats {
+    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    flex-shrink: 0;
+}
+
+.client-ont-header-network {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #333;
+    border: none;
+    padding: 1rem 1.5rem;
+    flex-shrink: 0;
+}
+
+.ont-avatar {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+}
+
+.client-ont-header h4,
+.client-ont-header h5 {
+    color: white;
+    font-weight: 600;
+    margin: 0;
+}
+
+.client-ont-header small {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+}
+
+.client-ont-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+    align-content: start;
+}
+
+.ont-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.ont-item:hover {
+    background: #f8f9fa;
+    border-color: #4facfe;
+    transform: translateX(4px);
+}
+
+.ont-item-full {
+    grid-column: 1 / -1;
+}
+
+.ont-item-warning {
+    background: linear-gradient(135deg, #fff5f7 0%, #ffeef0 100%);
+    border-color: #fa709a;
+}
+
+.ont-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.ont-icon-signal {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.ont-icon-stats {
+    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+}
+
+.ont-icon-network {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #333;
+}
+
+.ont-icon-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.ont-icon-danger {
+    background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+}
+
+.ont-icon-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.ont-icon-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+.ont-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.ont-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.ont-value {
+    font-size: 1rem;
+    color: #212529;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.ont-value-signal {
+    color: #fa709a;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.font-monospace {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Estilos para tablas dentro de las tarjetas */
+.client-ont-card .table-responsive {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.client-ont-card .table {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.client-ont-card .table thead {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.client-ont-card .table thead th {
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    padding: 0.75rem;
+    white-space: nowrap;
+}
+
+.client-ont-card .table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.client-ont-card .table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.client-ont-card .table tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+/* Asegurar que las tarjetas con tablas tengan altura mínima */
+.client-ont-card.card-with-table {
+    min-height: 500px;
+}
+
+/* Tarjetas de ancho completo */
+.client-ont-container .row > .col-12 {
+    grid-column: 1 / -1;
+    min-width: 100%;
+}
+
+/* Asegurar que las tarjetas de 2 columnas tengan el mismo ancho */
+.client-ont-container .row > .col-lg-6 {
+    min-width: 0;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .client-ont-container .row {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .client-ont-container .row {
+        grid-template-columns: 1fr;
+    }
+    
+    .client-ont-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ont-item-full {
+        grid-column: 1;
+    }
+    
+    .client-ont-card {
+        min-height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .client-ont-container .row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .client-ont-header {
+        padding: 1rem;
+    }
+    
+    .ont-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 2.5rem;
+    }
+    
+    .client-ont-header h4 {
+        font-size: 1.25rem;
+    }
+    
+    .ont-item {
+        padding: 0.75rem;
+    }
+    
+    .client-ont-card {
+        min-height: auto;
+    }
+    
+    .client-ont-card.card-with-table {
+        min-height: 400px;
+    }
+    
+    .client-ont-card .table thead th {
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+    
+    .client-ont-card .table tbody td {
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+}
+

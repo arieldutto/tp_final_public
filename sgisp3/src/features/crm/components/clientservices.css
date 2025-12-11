@@ -1,0 +1,168 @@
+/* Estilos para la información de servicios del cliente */
+.client-services-container {
+    padding: 0;
+}
+
+.client-services-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.client-services-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.client-services-header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+}
+
+.service-avatar {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+}
+
+.client-services-header h4 {
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.client-services-header small {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+}
+
+.client-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.service-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.service-item:hover {
+    background: #f8f9fa;
+    border-color: #f5576c;
+    transform: translateX(4px);
+}
+
+.service-item-full {
+    grid-column: 1 / -1;
+}
+
+.service-item-highlight {
+    background: linear-gradient(135deg, #fff5f7 0%, #ffeef0 100%);
+    border-color: #f5576c;
+}
+
+.service-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.service-icon-highlight {
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    box-shadow: 0 4px 8px rgba(245, 87, 108, 0.3);
+}
+
+.service-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.service-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.service-value {
+    font-size: 1rem;
+    color: #212529;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.service-value-highlight {
+    color: #f5576c;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.font-monospace {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .client-services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-item-full {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .client-services-header {
+        padding: 1rem;
+    }
+    
+    .service-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 2.5rem;
+    }
+    
+    .client-services-header h4 {
+        font-size: 1.25rem;
+    }
+    
+    .service-item {
+        padding: 0.75rem;
+    }
+}
+
