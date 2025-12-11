@@ -39,7 +39,7 @@ Hay dos formas:
 1. Crea un grupo en Telegram
 2. Agrega tu bot al grupo
 3. Envía un mensaje al grupo
-4. Visita: `https://api.telegram.org/bot<8216913209:AAHX3G036MHP_t7I_5HTnrnEi9z3yzO82NY>/getUpdates`
+4. Visita: `https://api.telegram.org/8216913209:AAHX3G036MHP_t7I_5HTnrnEi9z3yzO82NY/getUpdates`
 5. Busca el `chat.id` en la respuesta JSON
 
 ---
