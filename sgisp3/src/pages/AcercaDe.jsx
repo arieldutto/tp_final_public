@@ -1,45 +1,90 @@
-
-import React from 'react'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './AcercaDe.css';
 
 function AcercaDe() {
+    const navigate = useNavigate();
+
+    const features = [
+        { icon: 'bi-wifi', label: 'Gestión de OLT y ONT en tiempo real' },
+        { icon: 'bi-people', label: 'Administración de abonados y perfiles de servicio' },
+        { icon: 'bi-gear', label: 'Automatización de tareas de configuración y diagnóstico' },
+        { icon: 'bi-speedometer2', label: 'Dashboard con métricas y monitoreo en vivo' },
+        { icon: 'bi-puzzle', label: 'Arquitectura modular, adaptable a distintos entornos' },
+        { icon: 'bi-shield-lock', label: 'Control de accesos y registro de auditoría' },
+        { icon: 'bi-globe', label: 'Interfaz web responsiva' }
+    ];
+
     return (
-        <div className="card my-4 mx-auto w-75 rounded-4">
-            <div className="card-header">
-                Acerca de ...
-            </div>
-            <div className="card-body text-start">
-                <h5 className="card-title">Sistema de Gestión de ISP</h5>
+        <div className="acerca-de-container">
+            <div className="acerca-de-card">
+                {/* Header con gradiente */}
+                <div className="acerca-de-header">
+                    <div className="acerca-de-header-content">
+                        <div className="acerca-de-avatar">
+                            <i className="bi bi-info-circle-fill"></i>
+                        </div>
+                        <div>
+                            <h1 className="acerca-de-title">Sistema de Gestión de ISP</h1>
+                            <p className="acerca-de-subtitle">SGISP 3</p>
+                        </div>
+                    </div>
+                </div>
 
-                <p className="lead">
-                    SGISP (Sistema de Gestión Integral para Servicios de Proveedores de Internet) es una plataforma diseñada para el control, monitoreo y administración de equipos OLT y ONT dentro de una red GPON.
-                </p>
+                {/* Contenido principal */}
+                <div className="acerca-de-body">
+                    <div className="acerca-de-description">
+                        <p className="lead-text">
+                            SGISP (Sistema de Gestión Integral para Servicios de Proveedores de Internet) es una plataforma diseñada para el control, monitoreo y administración de equipos OLT y ONT dentro de una red GPON.
+                        </p>
+                        <p className="regular-text">
+                            Permite a los técnicos y administradores gestionar de forma centralizada los abonados, las conexiones y el estado de la red, optimizando el tiempo de respuesta y reduciendo errores operativos. Su interfaz intuitiva y modular facilita la integración con sistemas existentes y el crecimiento escalable del ISP.
+                        </p>
+                    </div>
 
-                <p>
-                    Permite a los técnicos y administradores gestionar de forma centralizada los abonados, las conexiones y el estado de la red, optimizando el tiempo de respuesta y reduciendo errores operativos. Su interfaz intuitiva y modular facilita la integración con sistemas existentes y el crecimiento escalable del ISP.
-                </p>
+                    <div className="acerca-de-divider"></div>
 
-                <hr />
+                    <div className="acerca-de-features">
+                        <h3 className="features-title">Principales características</h3>
+                        <div className="features-grid">
+                            {features.map((feature, index) => (
+                                <div key={index} className="feature-item">
+                                    <div className="feature-icon">
+                                        <i className={`bi ${feature.icon}`}></i>
+                                    </div>
+                                    <span className="feature-label">{feature.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
 
-                <h6 className="mt-3">Principales características</h6>
-
-                <ul className="list-group list-group-flush mb-3">
-                    <li className="list-group-item"><i className="bi bi-wifi me-2" aria-hidden></i>Gestión de OLT y ONT en tiempo real</li>
-                    <li className="list-group-item"><i className="bi bi-people me-2" aria-hidden></i>Administración de abonados y perfiles de servicio</li>
-                    <li className="list-group-item"><i className="bi bi-gear me-2" aria-hidden></i>Automatización de tareas de configuración y diagnóstico</li>
-                    <li className="list-group-item"><i className="bi bi-speedometer2 me-2" aria-hidden></i>Dashboard con métricas y monitoreo en vivo</li>
-                    <li className="list-group-item"><i className="bi bi-puzzle me-2" aria-hidden></i>Arquitectura modular, adaptable a distintos entornos</li>
-                    <li className="list-group-item"><i className="bi bi-shield-lock me-2" aria-hidden></i>Control de accesos y registro de auditoría</li>
-                    <li className="list-group-item"><i className="bi bi-globe me-2" aria-hidden></i>Interfaz web responsiva</li>
-                </ul>
-
-                <a href="/home" className="btn btn-primary">Ir a Home</a>
-            </div>
-
-            <div className="card-footer text-muted text-center">
-                <a href='http://aadingenieria.com.ar'>Creado por AAD Ingeniería SRL</a>
+                {/* Footer */}
+                <div className="acerca-de-footer">
+                    <div className="acerca-de-footer-content">
+                        <p className="footer-text">
+                            Creado por{' '}
+                            <a
+                                href="http://aadingenieria.com.ar"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="footer-link"
+                            >
+                                AAD Ingeniería SRL
+                            </a>
+                        </p>
+                    </div>
+                    <button
+                        className="acerca-de-btn"
+                        onClick={() => navigate('/home')}
+                    >
+                        <i className="bi bi-house-door me-2"></i>
+                        Ir a Home
+                    </button>
+                </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default AcercaDe
+export default AcercaDe;
