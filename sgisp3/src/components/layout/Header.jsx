@@ -41,34 +41,34 @@ function Header() {
                                 <DropdownMenu
                                     title="Infraestructura"
                                     items={[
-                                        { label: "NAS server", href: "/materiales" },
-                                        { label: "Gestion de Red", href: "/movimientos" },
-                                        { label: "Gestion IP Publicas", href: "/movimientos" }
+                                        { label: "NAS server", href: "/construccion" },
+                                        { label: "Gestion de Red", href: "/construccion" },
+                                        { label: "Gestion IP Publicas", href: "/construccion" }
                                     ]}
                                 />
                                 <DropdownMenu
                                     title="OLT"
                                     items={[
-                                        { label: "OLT", href: "/materiales" },
-                                        { label: "Configuraciones", href: "/movimientos" },
-                                        { label: "Tablas de trafico", href: "/movimientos" }
+                                        { label: "OLT", href: "/construccion" },
+                                        { label: "Configuraciones", href: "/construccion" },
+                                        { label: "Tablas de trafico", href: "/construccion" }
                                     ]}
                                 />
                                 <DropdownMenu
                                     title="ONT"
                                     items={[
-                                        { label: "Buscar ONT", href: "/materiales" },
+                                        { label: "Buscar ONT", href: "/construccion" },
                                         { label: "Listado de ONT", href: "/ont_list" },
-                                        { label: "Configuraciones", href: "/movimientos" },
-                                        { label: "Tablas de trafico", href: "/movimientos" }
+                                        { label: "Configuraciones", href: "/construccion" },
+                                        { label: "Tablas de trafico", href: "/construccion" }
                                     ]}
                                 />
                                 <DropdownMenu
                                     title="Server"
                                     items={[
                                         { label: "Estado Server", href: "/dashboard" },
-                                        { label: "Backup", href: "/movimientos" },
-                                        { label: "Configuraciones", href: "/movimientos" }
+                                        { label: "Backup", href: "/construccion" },
+                                        { label: "Configuraciones", href: "/construccion" }
                                     ]}
                                 />
                                 <li className="nav-item">
