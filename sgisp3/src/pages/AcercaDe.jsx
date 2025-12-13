@@ -15,6 +15,15 @@ function AcercaDe() {
         { icon: 'bi-globe', label: 'Interfaz web responsiva' }
     ];
 
+    const socialLinks = [
+        { icon: 'bi-instagram', name: 'Instagram', url: 'https://instagram.com/aadingenieria', color: '#E4405F' },
+        { icon: 'bi-facebook', name: 'Facebook', url: 'https://facebook.com/aadingenieria', color: '#1877F2' },
+        { icon: 'bi-discord', name: 'Discord', url: 'https://discord.gg/aadingenieria', color: '#5865F2' },
+        { icon: 'bi-youtube', name: 'YouTube', url: 'https://youtube.com/@aadingenieria', color: '#FF0000' },
+        { icon: 'bi-whatsapp', name: 'WhatsApp', url: 'https://wa.me/1234567890', color: '#25D366' },
+        { icon: 'bi-twitter-x', name: 'X (Twitter)', url: 'https://twitter.com/aadingenieria', color: '#000000' }
+    ];
+
     return (
         <div className="acerca-de-container">
             <div className="acerca-de-card">
@@ -73,6 +82,21 @@ function AcercaDe() {
                                 AAD Ingeniería SRL
                             </a>
                         </p>
+                        <div className="social-links">
+                            {socialLinks.map((social, index) => (
+                                <a
+                                    key={index}
+                                    href={social.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="social-link"
+                                    aria-label={social.name}
+                                    style={{ '--social-color': social.color }}
+                                >
+                                    <i className={`bi ${social.icon}`}></i>
+                                </a>
+                            ))}
+                        </div>
                     </div>
                     <button
                         className="acerca-de-btn"
