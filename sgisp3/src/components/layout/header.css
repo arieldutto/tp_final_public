@@ -22,42 +22,210 @@ nav,
 }
 
 .glass-nav {
-    background: rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg,
+            rgba(103, 163, 255, 0.25),
+            rgba(75, 132, 255, 0.20),
+            rgba(140, 82, 255, 0.18));
     /* Transparente estilo vidrio */
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(18px);
     /* Difuminado macOS */
-    -webkit-backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(18px);
     border-radius: 18px;
     /* Bordes redondeados */
-    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
     /* Borde definido pero elegante */
     margin: 10px;
-    padding: 6px 12px;
+    padding: 8px 16px;
 
     /* Para levantar la navbar visualmente */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
 }
 
 /* Para que el brand no quede tan apretado */
 .glass-nav .navbar-brand {
-    font-weight: bold;
-    font-size: 1.2rem;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.glass-nav .navbar-brand:hover {
+    text-shadow: 0 2px 12px rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
 }
 
 /* Para mejorar visibilidad de los links */
 .glass-nav .nav-link {
     color: white !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.glass-nav .dropdown-menu {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+.glass-nav .nav-link i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.glass-nav .nav-link:hover i,
+.glass-nav .nav-link.active i {
+    transform: scale(1.1);
+}
+
+.glass-nav .nav-link:hover,
+.glass-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Dropdown toggle mejorado */
+.glass-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.glass-dropdown-toggle i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.glass-dropdown-toggle[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+/* Dropdown menu con glassmorphism mejorado */
+.glass-dropdown-menu {
+    background: linear-gradient(135deg,
+            rgba(103, 163, 255, 0.25),
+            rgba(75, 132, 255, 0.20),
+            rgba(140, 82, 255, 0.18)) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 16px !important;
+    padding: 0.5rem !important;
+    margin-top: 0.5rem !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+    min-width: 220px;
+    animation: dropdownFadeIn 0.3s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Items del dropdown */
+.glass-dropdown-item {
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 10px !important;
+    margin: 0.25rem 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    background: transparent !important;
+    border: none !important;
+    width: 100% !important;
+    text-align: left !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-dropdown-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
+    transition: left 0.5s ease;
+}
+
+.glass-dropdown-item:hover::before {
+    left: 100%;
+}
+
+.glass-dropdown-item:hover,
+.glass-dropdown-item:focus {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    color: #fff !important;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.glass-dropdown-item:active {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateX(3px) scale(0.98);
+}
+
+.glass-dropdown-item i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.glass-dropdown-item:hover i {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.glass-dropdown-item span {
+    flex: 1;
+}
+
+/* Divider en dropdown */
+.glass-dropdown-menu .dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    margin: 0.5rem 0 !important;
+    opacity: 1 !important;
 }
 
 .icon-user {
     font-size: 1.2rem;
-    /* Ajustá a tu gusto */
     color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .glass-nav {
+        padding: 6px 12px;
+    }
+
+    .glass-nav .nav-link {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    .glass-dropdown-menu {
+        min-width: 200px;
+    }
 }

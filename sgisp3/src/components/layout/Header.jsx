@@ -28,7 +28,10 @@ function Header() {
                         <div className="collapse navbar-collapse" id="navbarScroll">
                             <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
                                 <li className="nav-item">
-                                    <a className="nav-link active" aria-current="page" href="/home">Home</a>
+                                    <a className="nav-link active" aria-current="page" href="/home">
+                                        <i className="bi bi-house-door me-1"></i>
+                                        <span>Home</span>
+                                    </a>
                                 </li>
                                 <DropdownMenu
                                     title="Abonados"
@@ -72,7 +75,10 @@ function Header() {
                                     ]}
                                 />
                                 <li className="nav-item">
-                                    <a className="nav-link active" aria-current="page" href="/about">Acerca de ...</a>
+                                    <a className="nav-link active" aria-current="page" href="/about">
+                                        <i className="bi bi-info-circle me-1"></i>
+                                        <span>Acerca de</span>
+                                    </a>
                                 </li>
                             </ul>
                             <div className='end'>
