@@ -36,7 +36,7 @@ function Header() {
                                 <DropdownMenu
                                     title="Abonados"
                                     items={[
-                                        { label: "Crear Abonado", href: "/clientes" },
+                                        { label: "Crear Abonado", href: "/clientes/crear" },
                                         { label: "Listado de Abonados", href: "/clientes" },
                                         { label: "Clientes Cards", href: "/clientescard" }
                                     ]}
@@ -60,7 +60,7 @@ function Header() {
                                 <DropdownMenu
                                     title="ONT"
                                     items={[
-                                        { label: "Buscar ONT", href: "/construccion" },
+                                        { label: "Buscar ONT", href: "/ont/buscar" },
                                         { label: "Listado de ONT", href: "/ont_list" },
                                         { label: "Configuraciones", href: "/construccion" },
                                         { label: "Tablas de trafico", href: "/construccion" }

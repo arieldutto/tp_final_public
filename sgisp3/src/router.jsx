@@ -7,10 +7,12 @@ import PublicHome from "./pages/PublicHome";
 import RequireAuth from "./features/auth/RequireAuth";
 import MainLayout from "./layouts/MainLayout";
 import OntsListPage from "./features/onts/pages/OntsListPage";
+import BuscarOntPage from "./features/onts/pages/BuscarOntPage";
 import ClientesList from "./features/crm/pages/ClientesList";
 import DashboardServer from "./features/server/pages/DashboardServer";
 import AbonadosPage from "./features/crm/pages/AbonadoPages";
 import AbonadoDetallePage from "./features/crm/pages/AbonadoDetallePage";
+import CrearAbonadoPage from "./features/crm/pages/CrearAbonadoPage";
 import Error404 from "./pages/errors/Error404";
 import Error500 from "./pages/errors/Error500";
 import ErrorGeneric from "./pages/errors/ErrorGeneric";
@@ -69,6 +71,17 @@ export const router = createBrowserRouter([
                 ]
             },
             {
+                path: "/ont/buscar",
+                element: <MainLayout />,
+                errorElement: <ErrorGeneric />,
+                children: [
+                    {
+                        index: true,
+                        element: <BuscarOntPage />
+                    }
+                ]
+            },
+            {
                 path: "/clientes",
                 element: <MainLayout />,
                 errorElement: <ErrorGeneric />,
@@ -76,6 +89,10 @@ export const router = createBrowserRouter([
                     {
                         index: true,
                         element: <ClientesList />
+                    },
+                    {
+                        path: "crear",
+                        element: <CrearAbonadoPage />
                     }
                 ]
             },

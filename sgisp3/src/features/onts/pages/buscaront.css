@@ -1,0 +1,313 @@
+.buscar-ont-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.buscar-ont-card {
+    background: linear-gradient(135deg,
+            rgba(103, 163, 255, 0.15),
+            rgba(75, 132, 255, 0.12),
+            rgba(140, 82, 255, 0.10));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    overflow: hidden;
+}
+
+.buscar-ont-header {
+    background: linear-gradient(135deg,
+            rgba(103, 163, 255, 0.25),
+            rgba(75, 132, 255, 0.20),
+            rgba(140, 82, 255, 0.18));
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.buscar-ont-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(103, 163, 255, 0.3), rgba(140, 82, 255, 0.3));
+    border-radius: 50%;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(103, 163, 255, 0.3);
+}
+
+.buscar-ont-header h2 {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.buscar-ont-header small {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.buscar-ont-body {
+    padding: 2rem;
+}
+
+/* Sección de detección */
+.detectar-section {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.detectar-section p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+}
+
+/* Card de información de ONT detectada */
+.ont-detectada-section {
+    margin-top: 1.5rem;
+}
+
+.ont-info-card {
+    background: linear-gradient(135deg,
+            rgba(103, 163, 255, 0.12),
+            rgba(75, 132, 255, 0.10),
+            rgba(140, 82, 255, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.ont-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ont-info-header h4 {
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    font-weight: 600;
+}
+
+.ont-info-body {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-label {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.info-value {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+}
+
+.font-monospace {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
+}
+
+/* Inputs con estilo glassmorphism */
+.glass-input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding: 0.75rem 1rem !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.glass-input:focus {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(103, 163, 255, 0.5) !important;
+    box-shadow: 0 0 0 0.2rem rgba(103, 163, 255, 0.25) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    outline: none !important;
+}
+
+.glass-input:disabled {
+    background: rgba(255, 255, 255, 0.05) !important;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+select.glass-input {
+    cursor: pointer;
+}
+
+select.glass-input option {
+    background: rgba(30, 30, 50, 0.95);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Labels */
+.form-label {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-label i {
+    color: rgba(103, 163, 255, 0.8);
+}
+
+/* Textos de ayuda */
+.form-help-text {
+    display: block;
+    margin-top: 0.375rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+/* Botones */
+.buscar-ont-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-btn,
+.glass-btn-primary {
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+}
+
+.glass-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.glass-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.glass-btn-primary {
+    background: linear-gradient(135deg, rgba(103, 163, 255, 0.4), rgba(140, 82, 255, 0.4));
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.glass-btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(103, 163, 255, 0.5), rgba(140, 82, 255, 0.5));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(103, 163, 255, 0.4);
+}
+
+.glass-btn:disabled,
+.glass-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Alertas */
+.alert {
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    margin-bottom: 1.5rem;
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(40, 167, 69, 0.3);
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+.alert-warning {
+    background: rgba(255, 193, 7, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.alert .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .buscar-ont-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .buscar-ont-body {
+        padding: 1.5rem;
+    }
+
+    .buscar-ont-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .buscar-ont-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .ont-info-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .buscar-ont-actions {
+        flex-direction: column;
+    }
+
+    .glass-btn,
+    .glass-btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
