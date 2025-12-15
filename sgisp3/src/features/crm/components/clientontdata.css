@@ -1,6 +1,28 @@
 /* Estilos para la información de ONT */
 .client-ont-container {
     padding: 0;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Scroll personalizado para el contenedor ONT */
+.client-ont-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.client-ont-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.client-ont-container::-webkit-scrollbar-thumb {
+    background: rgba(79, 172, 254, 0.5);
+    border-radius: 10px;
+}
+
+.client-ont-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(79, 172, 254, 0.7);
 }
 
 .client-ont-container .row {

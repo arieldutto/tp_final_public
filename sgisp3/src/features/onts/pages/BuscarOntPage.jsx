@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { detectarONT, agregarONT } from '../services/ontService';
+import { useConfiguracionesOLT } from '../hooks/useConfiguracionesOLT';
 import './buscaront.css';
 
 export default function BuscarOntPage() {
@@ -11,16 +12,32 @@ export default function BuscarOntPage() {
     const [exito, setExito] = useState(null);
     const [registroExistente, setRegistroExistente] = useState(null);
 
+    // Cargar configuraciones de OLT
+    const { lineprofiles, srvprofiles, trafficMappings, loading: loadingConfigs, error: errorConfigs } = useConfiguracionesOLT();
+
     // Estado del formulario
     const [formData, setFormData] = useState({
         Desc: '',
-        ont_lineprofile_id: '1',
-        ont_srvprofile_id: '1',
-        ont_downprofile_id: '1',
+        ont_lineprofile_id: '',
+        ont_srvprofile_id: '',
+        ont_downprofile_id: '',
         ont_modo: 'Router',
         ont_vlan: '300',
         mng_vlan: '200'
     });
+
+    // Establecer valores por defecto cuando se cargan las configuraciones
+    useEffect(() => {
+        if (lineprofiles.length > 0 && !formData.ont_lineprofile_id) {
+            setFormData(prev => ({ ...prev, ont_lineprofile_id: lineprofiles[0].profile_id }));
+        }
+        if (srvprofiles.length > 0 && !formData.ont_srvprofile_id) {
+            setFormData(prev => ({ ...prev, ont_srvprofile_id: srvprofiles[0].profile_id }));
+        }
+        if (trafficMappings.length > 0 && !formData.ont_downprofile_id) {
+            setFormData(prev => ({ ...prev, ont_downprofile_id: String(trafficMappings[0].id) }));
+        }
+    }, [lineprofiles, srvprofiles, trafficMappings]);
 
     // Manejar detección de ONT
     const handleDetectar = async () => {
@@ -100,7 +117,7 @@ export default function BuscarOntPage() {
                 Desc: formData.Desc,
                 ont_lineprofile_id: formData.ont_lineprofile_id,
                 ont_srvprofile_id: formData.ont_srvprofile_id,
-                ont_downprofile_id: formData.ont_downprofile_id,
+                ont_downprofile_id: parseInt(formData.ont_downprofile_id),
                 ont_modo: formData.ont_modo,
                 ont_vlan: formData.ont_vlan || '300',
                 mng_vlan: formData.mng_vlan || '200'
@@ -139,14 +156,19 @@ export default function BuscarOntPage() {
         setExito(null);
         setFormData({
             Desc: '',
-            ont_lineprofile_id: '1',
-            ont_srvprofile_id: '1',
-            ont_downprofile_id: '1',
+            ont_lineprofile_id: lineprofiles.length > 0 ? lineprofiles[0].profile_id : '',
+            ont_srvprofile_id: srvprofiles.length > 0 ? srvprofiles[0].profile_id : '',
+            ont_downprofile_id: trafficMappings.length > 0 ? String(trafficMappings[0].id) : '',
             ont_modo: 'Router',
             ont_vlan: '300',
             mng_vlan: '200'
         });
     };
+
+    // Obtener información del perfil de tráfico seleccionado
+    const selectedTrafficMapping = formData.ont_downprofile_id 
+        ? trafficMappings.find(m => String(m.id) === formData.ont_downprofile_id)
+        : null;
 
     return (
         <div className="container py-4">
@@ -165,6 +187,22 @@ export default function BuscarOntPage() {
                     </div>
 
                     <div className="buscar-ont-body">
+                        {/* Mensaje de carga de configuraciones */}
+                        {loadingConfigs && (
+                            <div className="alert alert-info" role="alert">
+                                <i className="bi bi-hourglass-split me-2"></i>
+                                Cargando configuraciones de la OLT...
+                            </div>
+                        )}
+
+                        {/* Error al cargar configuraciones */}
+                        {errorConfigs && (
+                            <div className="alert alert-warning" role="alert">
+                                <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                                <strong>Advertencia:</strong> {errorConfigs}. Algunas opciones pueden no estar disponibles.
+                            </div>
+                        )}
+
                         {/* Mensajes de éxito/error */}
                         {exito && (
                             <div className="alert alert-success alert-dismissible fade show" role="alert">
@@ -337,58 +375,111 @@ export default function BuscarOntPage() {
                                                         <small className="form-help-text">Modo de operación de la ONT</small>
                                                     </div>
 
-                                                    {/* Lineprofile ID */}
+                                                    {/* Lineprofile */}
                                                     <div className="col-md-4">
                                                         <label htmlFor="ont_lineprofile_id" className="form-label">
                                                             <i className="bi bi-list-ul me-2"></i>
-                                                            Lineprofile ID <span className="text-danger">*</span>
+                                                            Lineprofile <span className="text-danger">*</span>
                                                         </label>
-                                                        <input
-                                                            type="number"
+                                                        <select
                                                             className="form-control glass-input"
                                                             id="ont_lineprofile_id"
                                                             name="ont_lineprofile_id"
                                                             value={formData.ont_lineprofile_id}
                                                             onChange={handleChange}
                                                             required
-                                                            min="1"
-                                                        />
+                                                            disabled={loadingConfigs || lineprofiles.length === 0}
+                                                        >
+                                                            {loadingConfigs ? (
+                                                                <option>Cargando...</option>
+                                                            ) : lineprofiles.length === 0 ? (
+                                                                <option>No hay perfiles disponibles</option>
+                                                            ) : (
+                                                                <>
+                                                                    <option value="">Seleccione un lineprofile</option>
+                                                                    {lineprofiles.map(profile => (
+                                                                        <option key={profile.id} value={profile.profile_id}>
+                                                                            {profile.profile_coment || profile.profile_name} (ID: {profile.profile_id})
+                                                                        </option>
+                                                                    ))}
+                                                                </>
+                                                            )}
+                                                        </select>
+                                                        <small className="form-help-text">Perfil de línea para la ONT</small>
                                                     </div>
 
-                                                    {/* Srvprofile ID */}
+                                                    {/* Srvprofile */}
                                                     <div className="col-md-4">
                                                         <label htmlFor="ont_srvprofile_id" className="form-label">
                                                             <i className="bi bi-list-ul me-2"></i>
-                                                            Srvprofile ID <span className="text-danger">*</span>
+                                                            Srvprofile <span className="text-danger">*</span>
                                                         </label>
-                                                        <input
-                                                            type="number"
+                                                        <select
                                                             className="form-control glass-input"
                                                             id="ont_srvprofile_id"
                                                             name="ont_srvprofile_id"
                                                             value={formData.ont_srvprofile_id}
                                                             onChange={handleChange}
                                                             required
-                                                            min="1"
-                                                        />
+                                                            disabled={loadingConfigs || srvprofiles.length === 0}
+                                                        >
+                                                            {loadingConfigs ? (
+                                                                <option>Cargando...</option>
+                                                            ) : srvprofiles.length === 0 ? (
+                                                                <option>No hay perfiles disponibles</option>
+                                                            ) : (
+                                                                <>
+                                                                    <option value="">Seleccione un srvprofile</option>
+                                                                    {srvprofiles.map(profile => (
+                                                                        <option key={profile.id} value={profile.profile_id}>
+                                                                            {profile.profile_coment || profile.profile_name} (ID: {profile.profile_id})
+                                                                        </option>
+                                                                    ))}
+                                                                </>
+                                                            )}
+                                                        </select>
+                                                        <small className="form-help-text">Perfil de servicio para la ONT</small>
                                                     </div>
 
-                                                    {/* Downprofile ID */}
+                                                    {/* Perfil de Tráfico */}
                                                     <div className="col-md-4">
                                                         <label htmlFor="ont_downprofile_id" className="form-label">
-                                                            <i className="bi bi-list-ul me-2"></i>
-                                                            Perfil de Tráfico ID <span className="text-danger">*</span>
+                                                            <i className="bi bi-speedometer2 me-2"></i>
+                                                            Perfil de Tráfico <span className="text-danger">*</span>
                                                         </label>
-                                                        <input
-                                                            type="number"
+                                                        <select
                                                             className="form-control glass-input"
                                                             id="ont_downprofile_id"
                                                             name="ont_downprofile_id"
                                                             value={formData.ont_downprofile_id}
                                                             onChange={handleChange}
                                                             required
-                                                            min="1"
-                                                        />
+                                                            disabled={loadingConfigs || trafficMappings.length === 0}
+                                                        >
+                                                            {loadingConfigs ? (
+                                                                <option>Cargando...</option>
+                                                            ) : trafficMappings.length === 0 ? (
+                                                                <option>No hay perfiles disponibles</option>
+                                                            ) : (
+                                                                <>
+                                                                    <option value="">Seleccione un perfil de tráfico</option>
+                                                                    {trafficMappings.map(mapping => (
+                                                                        <option key={mapping.id} value={mapping.id}>
+                                                                            {mapping.profile_name} - 
+                                                                            {mapping.upload?.traffic_name || 'N/A'} ↑ / 
+                                                                            {mapping.download?.traffic_name || 'N/A'} ↓
+                                                                        </option>
+                                                                    ))}
+                                                                </>
+                                                            )}
+                                                        </select>
+                                                        {selectedTrafficMapping ? (
+                                                            <small className="form-help-text">
+                                                                {selectedTrafficMapping.comments || `Upload: ${selectedTrafficMapping.upload?.traffic_name || 'N/A'} / Download: ${selectedTrafficMapping.download?.traffic_name || 'N/A'}`}
+                                                            </small>
+                                                        ) : (
+                                                            <small className="form-help-text">Seleccione un perfil de tráfico para ver los detalles</small>
+                                                        )}
                                                     </div>
 
                                                     {/* VLAN Datos */}

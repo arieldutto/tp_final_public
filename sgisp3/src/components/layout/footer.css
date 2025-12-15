@@ -42,3 +42,17 @@
     justify-content: center;
     align-items: center;
 }
+
+.footer-version-badge {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+.footer-version-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}

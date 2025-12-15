@@ -7,7 +7,7 @@ export function useClienteCompleto(id) {
     const [error, setError] = useState(null);
     console.log("numero de Id cliente recibido:", id);
 
-    useEffect(() => {
+    const fetchCliente = () => {
         if (!id) return;
 
         setLoading(true);
@@ -27,7 +27,12 @@ export function useClienteCompleto(id) {
                 setError("Error de red o servidor");
             })
             .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        fetchCliente();
     }, [id]);
+    
     console.log("Hook useClienteCompleto loading:", loading, "Datos:", infocliente);
-    return { infocliente, loading, error };
+    return { infocliente, loading, error, refetch: fetchCliente };
 }

@@ -1,12 +1,14 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import OntsCard from '../components/OntsCard'
 import DataList from '../../../components/DataList';
 import { useOntAcsApi } from '../hooks/useOntAcsApi';
 import TelegramAlertButton from '../components/TelegramAlertButton';
+import EstadisticasOnt from '../components/EstadisticasOnt';
 import '../styles/ontslist.css';
 
 function OntsListPage() {
     const { statusBar, ontsList, loading, error } = useOntAcsApi();
+    const [showEstadisticas, setShowEstadisticas] = useState(false);
 
     // Función para calcular el porcentaje
     const calcularPorcentaje = (cantidad, total) => {
@@ -108,11 +110,28 @@ function OntsListPage() {
                     </div>
                 ) : (
                     <>
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h2 className="text-light mb-0">Listado de ONT</h2>
+                            <button
+                                className="btn btn-primary glass-btn-primary"
+                                onClick={() => setShowEstadisticas(!showEstadisticas)}
+                            >
+                                <i className={`bi ${showEstadisticas ? 'bi-eye-slash' : 'bi-graph-up-arrow'} me-2`}></i>
+                                {showEstadisticas ? 'Ocultar Estadísticas' : 'Ver Estadísticas de Uso'}
+                            </button>
+                        </div>
+
+                        {showEstadisticas && (
+                            <div className="mb-4">
+                                <EstadisticasOnt />
+                            </div>
+                        )}
+
                         <TelegramAlertButton ontsList={ontsList} />
                         <DataList
                             data={ontsDataFormatted}
                             itemsPerPage={10}
-                            titulo='Listado de ONT'
+                            titulo=''
                             getRowClassName={(row) => row.Estado === 'Señal baja' ? 'table-danger ont-signal-low' : ''}
                         />
                     </>

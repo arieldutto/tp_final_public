@@ -12,7 +12,7 @@ import ClientOntData from "./ClientOntData";
 
 function ClientsDetail({ idCliente }) {
     // Llamo al hooks para traer los datos del cliente
-    const { infocliente, loading, error } = useClienteCompleto(idCliente);
+    const { infocliente, loading, error, refetch } = useClienteCompleto(idCliente);
 
     // Estado para manejar las tabs 
     const [activeTab, setActiveTab] = useState("info");
@@ -29,12 +29,20 @@ function ClientsDetail({ idCliente }) {
     const servicios = infocliente.servicios[0];
     const serie = infocliente.serie;
     console.log("Datos desde el hooks servicios:", servicios)
+    // Función para manejar la actualización del abonado
+    const handleUpdate = () => {
+        // Recargar los datos del cliente
+        if (refetch) {
+            refetch();
+        }
+    };
+
     // Función para renderizar el componente activo
     const renderTabContent = () => {
         switch (activeTab) {
             case "info":
-                // Le pasamos los props que necesita (datos, idCliente)
-                return <ClientInfo datos={cliente} idCliente={idCliente} />;
+                // Le pasamos los props que necesita (datos, idCliente, onUpdate)
+                return <ClientInfo datos={cliente} idCliente={idCliente} onUpdate={handleUpdate} />;
             case "servicios":
                 // Le pasamos los datos si los necesita
                 return <ClientServices numclient={idCliente} />;

@@ -144,8 +144,32 @@
 
 /* Contenedor de contenido */
 .client-detail-content {
-    padding: 1.5rem;
+    padding: 1rem;
     min-height: 200px;
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scroll personalizado */
+.client-detail-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.client-detail-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.client-detail-content::-webkit-scrollbar-thumb {
+    background: rgba(103, 163, 255, 0.5);
+    border-radius: 10px;
+}
+
+.client-detail-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(103, 163, 255, 0.7);
 }
 
 /* Responsive */

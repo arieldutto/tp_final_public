@@ -90,8 +90,8 @@ function ClientMap({ cliente }) {
                         Ubicación del Cliente
                     </h5>
                 </div>
-                <div className="card-body p-0" style={{ height: 'calc(100% - 60px)' }}>
-                    <div style={{ height: '100%', minHeight: '400px', borderRadius: '0 0 8px 8px', overflow: 'hidden' }}>
+                <div className="card-body p-0" style={{ height: 'calc(100% - 100px)', flex: 1, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', minHeight: '300px', borderRadius: '0 0 8px 8px', overflow: 'hidden' }}>
                         <MapContainer
                             center={[coordinates.lat, coordinates.lng]}
                             zoom={15}

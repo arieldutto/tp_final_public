@@ -1,0 +1,252 @@
+.estadisticas-ont-container {
+    padding: 0;
+}
+
+.estadisticas-ont-card {
+    background: linear-gradient(135deg,
+            rgba(103, 163, 255, 0.15),
+            rgba(75, 132, 255, 0.12),
+            rgba(140, 82, 255, 0.10));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    overflow: hidden;
+}
+
+.estadisticas-ont-header {
+    background: linear-gradient(135deg,
+            rgba(103, 163, 255, 0.25),
+            rgba(75, 132, 255, 0.20),
+            rgba(140, 82, 255, 0.18));
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.estadisticas-ont-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(103, 163, 255, 0.3), rgba(140, 82, 255, 0.3));
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(103, 163, 255, 0.3);
+}
+
+.estadisticas-ont-header h3 {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 0;
+}
+
+.estadisticas-ont-header small {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.estadisticas-ont-body {
+    padding: 2rem;
+}
+
+/* Resumen */
+.estadisticas-resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.estadistica-resumen-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.estadistica-resumen-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.estadistica-resumen-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(103, 163, 255, 0.3), rgba(140, 82, 255, 0.3));
+    border-radius: 12px;
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.estadistica-resumen-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.estadistica-resumen-label {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.estadistica-resumen-value {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 700;
+}
+
+/* Secciones de gráficos */
+.estadisticas-chart-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.estadisticas-chart-section h5 {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Tabla */
+.estadisticas-table-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.frame-header {
+    padding: 0.75rem 1rem;
+    background: rgba(103, 163, 255, 0.15);
+    border-radius: 8px;
+    border-left: 4px solid rgba(103, 163, 255, 0.5);
+}
+
+.board-header {
+    padding: 0.5rem 0.75rem;
+    background: rgba(140, 82, 255, 0.1);
+    border-radius: 6px;
+    border-left: 3px solid rgba(140, 82, 255, 0.4);
+}
+
+.estadisticas-table-section h5 {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+}
+
+.estadisticas-table-section .table {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.estadisticas-table-section .table thead th {
+    background: rgba(103, 163, 255, 0.25);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.estadisticas-table-section .table tbody tr {
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.estadisticas-table-section .table tbody tr:hover {
+    background: rgba(103, 163, 255, 0.15);
+    transform: scale(1.01);
+}
+
+.estadisticas-table-section .table tbody td {
+    vertical-align: middle;
+    border-color: rgba(255, 255, 255, 0.15);
+    background: transparent;
+}
+
+.estadisticas-table-section .progress {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    min-height: 24px;
+}
+
+.estadisticas-table-section .progress-bar {
+    transition: width 0.3s ease;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    position: relative;
+    min-height: 24px;
+}
+
+/* Asegurar que el texto sea visible en todas las barras */
+.estadisticas-table-section .progress-bar.bg-success {
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.estadisticas-table-section .progress-bar.bg-warning {
+    color: #000;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.estadisticas-table-section .progress-bar.bg-danger {
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.font-monospace {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .estadisticas-ont-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .estadisticas-ont-body {
+        padding: 1.5rem;
+    }
+
+    .estadisticas-resumen-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .estadisticas-chart-section {
+        padding: 1rem;
+    }
+
+    .estadisticas-table-section {
+        padding: 1rem;
+        overflow-x: auto;
+    }
+}
+

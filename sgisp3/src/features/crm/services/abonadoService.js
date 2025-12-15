@@ -1,4 +1,4 @@
-// Servicio para crear abonados
+// Servicio para crear, modificar y eliminar abonados
 import { API_SGISP } from "../../../config";
 
 export async function crearAbonado(datosAbonado) {
@@ -77,6 +77,160 @@ export async function crearAbonado(datosAbonado) {
         return {
             ok: false,
             error: error.message || "Error de conexión al crear el abonado"
+        };
+    }
+}
+
+/**
+ * Modifica un abonado existente
+ * @param {number} abonadoId - ID del abonado a modificar
+ * @param {Object} datosActualizacion - Datos a actualizar (todos opcionales)
+ * @returns {Promise<Object>} Resultado de la operación
+ */
+export async function modificarAbonado(abonadoId, datosActualizacion) {
+    try {
+        // Validar que se envíe al menos un campo
+        const camposEnviados = Object.keys(datosActualizacion).filter(
+            key => datosActualizacion[key] !== null && datosActualizacion[key] !== undefined && datosActualizacion[key] !== ''
+        );
+
+        if (camposEnviados.length === 0) {
+            return {
+                ok: false,
+                error: "No se enviaron campos para actualizar"
+            };
+        }
+
+        // Preparar payload solo con campos que tienen valor
+        const payload = {};
+        
+        if (datosActualizacion.Razonsocial !== undefined && datosActualizacion.Razonsocial !== null && datosActualizacion.Razonsocial !== '') {
+            payload.Razonsocial = datosActualizacion.Razonsocial;
+        }
+        
+        if (datosActualizacion.NumeroCliente !== undefined && datosActualizacion.NumeroCliente !== null && datosActualizacion.NumeroCliente !== '') {
+            payload.NumeroCliente = parseInt(datosActualizacion.NumeroCliente);
+        }
+        
+        if (datosActualizacion.Domicilio !== undefined && datosActualizacion.Domicilio !== null && datosActualizacion.Domicilio !== '') {
+            payload.Domicilio = datosActualizacion.Domicilio;
+        }
+        
+        if (datosActualizacion.Localidad !== undefined && datosActualizacion.Localidad !== null && datosActualizacion.Localidad !== '') {
+            payload.Localidad = datosActualizacion.Localidad;
+        }
+        
+        if (datosActualizacion.Telefono !== undefined && datosActualizacion.Telefono !== null && datosActualizacion.Telefono !== '') {
+            payload.Telefono = datosActualizacion.Telefono;
+        }
+        
+        if (datosActualizacion.DNI !== undefined && datosActualizacion.DNI !== null && datosActualizacion.DNI !== '') {
+            payload.DNI = datosActualizacion.DNI;
+        }
+        
+        if (datosActualizacion.FechaAlta !== undefined && datosActualizacion.FechaAlta !== null && datosActualizacion.FechaAlta !== '') {
+            payload.FechaAlta = datosActualizacion.FechaAlta;
+        }
+
+        const response = await fetch(`${API_SGISP}/modificar_abonado/${abonadoId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.status === 200) {
+            return {
+                ok: true,
+                data: data.abonado,
+                message: data.message || "Abonado actualizado exitosamente"
+            };
+        } else if (response.status === 400) {
+            return {
+                ok: false,
+                error: data.error || "Error en los datos enviados",
+                campos_disponibles: data.campos_disponibles || null
+            };
+        } else if (response.status === 404) {
+            return {
+                ok: false,
+                error: `Abonado no encontrado (ID: ${abonadoId})`
+            };
+        } else if (response.status === 409) {
+            return {
+                ok: false,
+                error: `El número de cliente ${data.numero_cliente || datosActualizacion.NumeroCliente} ya existe en otro registro`
+            };
+        } else {
+            return {
+                ok: false,
+                error: data.error || `Error ${response.status}: ${response.statusText}`,
+                detalle: data.detalle || null
+            };
+        }
+    } catch (error) {
+        console.error("Error al modificar abonado:", error);
+        return {
+            ok: false,
+            error: error.message || "Error de conexión al modificar el abonado"
+        };
+    }
+}
+
+/**
+ * Elimina un abonado
+ * @param {number} abonadoId - ID del abonado a eliminar
+ * @returns {Promise<Object>} Resultado de la operación
+ */
+export async function eliminarAbonado(abonadoId) {
+    try {
+        const response = await fetch(`${API_SGISP}/eliminar_abonado/${abonadoId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.status === 200) {
+            return {
+                ok: true,
+                data: data.abonado_eliminado,
+                message: data.message || "Abonado eliminado exitosamente"
+            };
+        } else if (response.status === 400) {
+            return {
+                ok: false,
+                error: data.error || "ID inválido"
+            };
+        } else if (response.status === 404) {
+            return {
+                ok: false,
+                error: `Abonado no encontrado (ID: ${abonadoId})`
+            };
+        } else if (response.status === 409) {
+            return {
+                ok: false,
+                error: "No se puede eliminar el abonado porque tiene servicios asociados",
+                servicios_asociados: data.servicios_asociados || null,
+                mensaje: data.mensaje || "Elimine primero los servicios asociados antes de eliminar el abonado"
+            };
+        } else {
+            return {
+                ok: false,
+                error: data.error || `Error ${response.status}: ${response.statusText}`,
+                detalle: data.detalle || null
+            };
+        }
+    } catch (error) {
+        console.error("Error al eliminar abonado:", error);
+        return {
+            ok: false,
+            error: error.message || "Error de conexión al eliminar el abonado"
         };
     }
 }
