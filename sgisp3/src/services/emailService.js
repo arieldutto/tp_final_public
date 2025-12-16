@@ -126,31 +126,64 @@ function formatOntAlertHTML(ont, index = null) {
     const urgencyIcon = getUrgencyIcon(potencia);
     const urgencyLevel = getUrgencyLevel(potencia);
     const urgencyColor = getUrgencyColor(potencia);
+
+    // Determinar si es crítica o muy crítica para destacar más
+    const isVeryCritical = potencia !== null && potencia <= -27;
+    const isCritical = potencia !== null && potencia <= -25 && potencia > -27;
+
+    // Colores y estilos según urgencia
+    let cardBgColor = '#fff';
+    let cardBorderColor = urgencyColor;
+    let cardShadow = '0 2px 4px rgba(0,0,0,0.1)';
+    let headerBg = `linear-gradient(135deg, ${urgencyColor}15 0%, ${urgencyColor}05 100%)`;
+
+    if (isVeryCritical) {
+        cardBgColor = '#fff5f5';
+        cardBorderColor = '#f44336';
+        cardShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+        headerBg = 'linear-gradient(135deg, #ffebee 0%, #fff5f5 100%)';
+    } else if (isCritical) {
+        cardBgColor = '#fff8e1';
+        cardBorderColor = '#ff9800';
+        cardShadow = '0 3px 8px rgba(255, 152, 0, 0.2)';
+        headerBg = 'linear-gradient(135deg, #fff3e0 0%, #fff8e1 100%)';
+    }
+
     const numero = index !== null ? `${index + 1}. ` : '';
 
     return `
-        <div style="margin-bottom: 20px; padding: 15px; background-color: #f5f5f5; border-left: 4px solid ${urgencyColor}; border-radius: 4px;">
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <strong style="font-size: 16px; color: #333;">${numero}${cliente}</strong>
+        <div style="margin-bottom: 24px; padding: 0; background-color: ${cardBgColor}; border-left: 5px solid ${cardBorderColor}; border-radius: 8px; box-shadow: ${cardShadow}; overflow: hidden; transition: all 0.3s ease;">
+            <div style="background: ${headerBg}; padding: 16px 20px; border-bottom: 1px solid ${cardBorderColor}30;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 28px; line-height: 1;">${urgencyIcon}</span>
+                        <div>
+                            <strong style="font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 4px;">${numero}${cliente}</strong>
+                            <span style="font-size: 13px; color: ${urgencyColor}; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">${urgencyLevel}</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 20px; font-weight: 700; color: ${urgencyColor}; line-height: 1.2;">${potenciaFormatted}</div>
+                        <div style="font-size: 11px; color: #666; margin-top: 2px;">Potencia RX</div>
+                    </div>
+                </div>
             </div>
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="padding: 5px 10px; color: #666; width: 150px;"><strong>Potencia RX:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${potenciaFormatted} <span style="color: ${urgencyColor}; font-weight: bold;">(${urgencyLevel})</span></td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Serie:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${serie}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Modelo:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${modelo}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Último Reporte:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${ultimoReporte}</td>
-                </tr>
-            </table>
+            <div style="padding: 16px 20px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; width: 140px; font-size: 13px;"><strong>Serie:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px; font-family: 'Courier New', monospace;">${serie}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Modelo:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${modelo}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Ultimo Reporte:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${ultimoReporte}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     `;
 }
@@ -169,43 +202,75 @@ function formatOntNoReportHTML(ont, index = null) {
 
     // Calcular horas sin reporte
     let horasSinReporte = 'N/A';
+    let horasNumero = 0;
     if (ont.ont_lastinform_local) {
         try {
             const lastReport = new Date(ont.ont_lastinform_local);
             const ahora = new Date();
             const diffMs = ahora - lastReport;
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            horasSinReporte = `${diffHours} horas`;
+            horasNumero = Math.floor(diffMs / (1000 * 60 * 60));
+            horasSinReporte = `${horasNumero} horas`;
         } catch (e) {
             horasSinReporte = 'N/A';
         }
     }
 
+    // Determinar urgencia según horas sin reporte
+    const isVeryUrgent = horasNumero >= 24;
+    const isUrgent = horasNumero >= 18;
+
+    let cardBgColor = '#fffbf0';
+    let cardBorderColor = '#ffc107';
+    let cardShadow = '0 2px 4px rgba(255, 193, 7, 0.2)';
+    let headerBg = 'linear-gradient(135deg, #fff8e1 0%, #fffbf0 100%)';
+
+    if (isVeryUrgent) {
+        cardBgColor = '#fff3e0';
+        cardBorderColor = '#ff9800';
+        cardShadow = '0 4px 12px rgba(255, 152, 0, 0.3)';
+        headerBg = 'linear-gradient(135deg, #ffe0b2 0%, #fff3e0 100%)';
+    } else if (isUrgent) {
+        cardBgColor = '#fff8e1';
+        cardBorderColor = '#ffc107';
+        cardShadow = '0 3px 8px rgba(255, 193, 7, 0.25)';
+        headerBg = 'linear-gradient(135deg, #ffecb3 0%, #fff8e1 100%)';
+    }
+
     const numero = index !== null ? `${index + 1}. ` : '';
 
     return `
-        <div style="margin-bottom: 20px; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <strong style="font-size: 16px; color: #333;">${numero}${cliente} - Sin reporte hace mas de 12 horas</strong>
+        <div style="margin-bottom: 24px; padding: 0; background-color: ${cardBgColor}; border-left: 5px solid ${cardBorderColor}; border-radius: 8px; box-shadow: ${cardShadow}; overflow: hidden;">
+            <div style="background: ${headerBg}; padding: 16px 20px; border-bottom: 1px solid ${cardBorderColor}30;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 28px; line-height: 1;">⏰</span>
+                        <div>
+                            <strong style="font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 4px;">${numero}${cliente}</strong>
+                            <span style="font-size: 13px; color: ${cardBorderColor}; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Sin Reporte</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 20px; font-weight: 700; color: ${cardBorderColor}; line-height: 1.2;">${horasSinReporte}</div>
+                        <div style="font-size: 11px; color: #666; margin-top: 2px;">Tiempo Offline</div>
+                    </div>
+                </div>
             </div>
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="padding: 5px 10px; color: #666; width: 150px;"><strong>Serie:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${serie}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Modelo:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${modelo}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Último Reporte:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${ultimoReporte}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Tiempo sin reporte:</strong></td>
-                    <td style="padding: 5px 10px; color: #333; font-weight: bold;">${horasSinReporte}</td>
-                </tr>
-            </table>
+            <div style="padding: 16px 20px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; width: 140px; font-size: 13px;"><strong>Serie:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px; font-family: 'Courier New', monospace;">${serie}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Modelo:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${modelo}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Ultimo Reporte:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${ultimoReporte}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     `;
 }
@@ -226,48 +291,79 @@ function formatOntStateChangeHTML(ont, previousState, index = null) {
     const estadoActual = ont.RX_Estado || 'unknown';
 
     const estados = {
-        'success': { text: 'En linea', color: '#4caf50' },
-        'danger': { text: 'Senal baja', color: '#f44336' },
-        'warning': { text: 'Advertencia', color: '#ff9800' },
-        'unknown': { text: 'Desconocido', color: '#757575' }
+        'success': { text: 'En linea', color: '#4caf50', icon: '✅' },
+        'danger': { text: 'Senal baja', color: '#f44336', icon: '🔴' },
+        'warning': { text: 'Advertencia', color: '#ff9800', icon: '⚠️' },
+        'unknown': { text: 'Desconocido', color: '#757575', icon: '❓' }
     };
 
-    const estadoAnteriorInfo = estados[estadoAnterior] || { text: estadoAnterior, color: '#757575' };
-    const estadoActualInfo = estados[estadoActual] || { text: estadoActual, color: '#757575' };
+    const estadoAnteriorInfo = estados[estadoAnterior] || { text: estadoAnterior, color: '#757575', icon: '❓' };
+    const estadoActualInfo = estados[estadoActual] || { text: estadoActual, color: '#757575', icon: '❓' };
 
     const potencia = ont.RX_Power !== null && ont.RX_Power !== undefined
         ? `${ont.RX_Power.toFixed(2)} dbm`
         : 'N/A';
 
+    // Determinar si el cambio es crítico (empeoró)
+    const isCriticalChange = estadoAnterior === 'success' && estadoActual === 'danger';
+
+    let cardBgColor = '#e8f4fd';
+    let cardBorderColor = '#2196f3';
+    let cardShadow = '0 2px 4px rgba(33, 150, 243, 0.2)';
+    let headerBg = 'linear-gradient(135deg, #e3f2fd 0%, #e8f4fd 100%)';
+
+    if (isCriticalChange) {
+        cardBgColor = '#fff3e0';
+        cardBorderColor = '#ff9800';
+        cardShadow = '0 4px 12px rgba(255, 152, 0, 0.3)';
+        headerBg = 'linear-gradient(135deg, #ffe0b2 0%, #fff3e0 100%)';
+    }
+
     const numero = index !== null ? `${index + 1}. ` : '';
 
     return `
-        <div style="margin-bottom: 20px; padding: 15px; background-color: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px;">
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <strong style="font-size: 16px; color: #333;">${numero}${cliente} - Cambio de Estado</strong>
+        <div style="margin-bottom: 24px; padding: 0; background-color: ${cardBgColor}; border-left: 5px solid ${cardBorderColor}; border-radius: 8px; box-shadow: ${cardShadow}; overflow: hidden;">
+            <div style="background: ${headerBg}; padding: 16px 20px; border-bottom: 1px solid ${cardBorderColor}30;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 28px; line-height: 1;">🔄</span>
+                    <div>
+                        <strong style="font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 4px;">${numero}${cliente}</strong>
+                        <span style="font-size: 13px; color: ${cardBorderColor}; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Cambio de Estado</span>
+                    </div>
+                </div>
             </div>
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="padding: 5px 10px; color: #666; width: 150px;"><strong>Serie:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${serie}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Modelo:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${modelo}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Estado Anterior:</strong></td>
-                    <td style="padding: 5px 10px; color: ${estadoAnteriorInfo.color}; font-weight: bold;">${estadoAnteriorInfo.text}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Estado Actual:</strong></td>
-                    <td style="padding: 5px 10px; color: ${estadoActualInfo.color}; font-weight: bold;">${estadoActualInfo.text}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 5px 10px; color: #666;"><strong>Potencia RX:</strong></td>
-                    <td style="padding: 5px 10px; color: #333;">${potencia}</td>
-                </tr>
-            </table>
+            <div style="padding: 16px 20px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; width: 140px; font-size: 13px;"><strong>Serie:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px; font-family: 'Courier New', monospace;">${serie}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Modelo:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${modelo}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Estado Anterior:</strong></td>
+                        <td style="padding: 8px 0;">
+                            <span style="display: inline-flex; align-items: center; gap: 6px; color: ${estadoAnteriorInfo.color}; font-weight: 600; font-size: 13px;">
+                                ${estadoAnteriorInfo.icon} ${estadoAnteriorInfo.text}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Estado Actual:</strong></td>
+                        <td style="padding: 8px 0;">
+                            <span style="display: inline-flex; align-items: center; gap: 6px; color: ${estadoActualInfo.color}; font-weight: 700; font-size: 14px;">
+                                ${estadoActualInfo.icon} ${estadoActualInfo.text}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Potencia RX:</strong></td>
+                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${potencia}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     `;
 }
@@ -327,62 +423,69 @@ function generateAlertsHTML(alerts) {
     const totalAlerts = lowSignal.length + withoutReport.length + stateChange.length;
 
     // El endpoint /api/reporte_personalizado ya incluye header y footer en su plantilla
-    // Solo enviamos el contenido interno con estilos inline
+    // Solo enviamos el contenido interno con estilos inline mejorados
     let html = `
         <style>
             .summary {
-                background-color: white;
-                padding: 20px;
-                border-radius: 8px;
-                margin-bottom: 30px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 24px;
+                border-radius: 12px;
+                margin-bottom: 32px;
+                box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
             }
             .summary h2 {
-                margin-top: 0;
-                color: #333;
-                border-bottom: 2px solid #667eea;
-                padding-bottom: 10px;
+                margin: 0 0 20px 0;
+                color: white;
+                font-size: 22px;
+                font-weight: 600;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             }
             .summary-item {
                 display: inline-block;
-                margin: 10px 15px 10px 0;
-                padding: 10px 20px;
-                background-color: #f5f5f5;
-                border-radius: 6px;
-                font-weight: bold;
+                margin: 8px 12px 8px 0;
+                padding: 12px 20px;
+                background-color: rgba(255, 255, 255, 0.95);
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 14px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                transition: transform 0.2s ease;
             }
             .section {
-                background-color: white;
-                padding: 20px;
-                border-radius: 8px;
-                margin-bottom: 20px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                background-color: #fafafa;
+                padding: 24px;
+                border-radius: 12px;
+                margin-bottom: 24px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                border: 1px solid #e0e0e0;
             }
             .section h3 {
-                margin-top: 0;
-                color: #333;
-                border-bottom: 2px solid #e0e0e0;
-                padding-bottom: 10px;
+                margin: 0 0 20px 0;
+                color: #1a1a1a;
+                font-size: 20px;
+                font-weight: 600;
+                padding-bottom: 12px;
+                border-bottom: 3px solid #667eea;
             }
         </style>
         
         <div class="summary">
-            <h2>Resumen</h2>
+            <h2>📊 Resumen de Alertas</h2>
     `;
 
-    // Agregar resumen por tipo (sin emojis para evitar problemas de codificación)
+    // Agregar resumen por tipo con emojis y mejor diseño
     if (lowSignal.length > 0) {
-        html += `<span class="summary-item" style="border-left: 4px solid #f44336;">Señal Baja: ${lowSignal.length}</span>`;
+        html += `<span class="summary-item" style="border-left: 4px solid #f44336; color: #f44336;">🔴 Señal Baja: <strong>${lowSignal.length}</strong></span>`;
     }
     if (withoutReport.length > 0) {
-        html += `<span class="summary-item" style="border-left: 4px solid #ffc107;">Sin Reporte: ${withoutReport.length}</span>`;
+        html += `<span class="summary-item" style="border-left: 4px solid #ffc107; color: #f57c00;">⏰ Sin Reporte: <strong>${withoutReport.length}</strong></span>`;
     }
     if (stateChange.length > 0) {
-        html += `<span class="summary-item" style="border-left: 4px solid #2196f3;">Cambio Estado: ${stateChange.length}</span>`;
+        html += `<span class="summary-item" style="border-left: 4px solid #2196f3; color: #1976d2;">🔄 Cambio Estado: <strong>${stateChange.length}</strong></span>`;
     }
 
     html += `
-                <span class="summary-item" style="border-left: 4px solid #667eea;">Total: ${totalAlerts} ONT(s)</span>
+                <span class="summary-item" style="border-left: 4px solid #667eea; color: #667eea; background: rgba(255,255,255,1); font-size: 15px;">📋 Total: <strong>${totalAlerts} ONT(s)</strong></span>
             </div>
     `;
 
@@ -399,7 +502,7 @@ function generateAlertsHTML(alerts) {
 
         html += `
             <div class="section">
-                <h3>ONTs con Señal Baja (${lowSignal.length})</h3>
+                <h3 style="color: #f44336;">🔴 ONTs con Señal Baja (${lowSignal.length})</h3>
         `;
 
         allOntsOrdered.forEach((ont, index) => {
@@ -413,7 +516,7 @@ function generateAlertsHTML(alerts) {
     if (withoutReport.length > 0) {
         html += `
             <div class="section">
-                <h3>ONTs sin Reporte hace mas de 12 horas (${withoutReport.length})</h3>
+                <h3 style="color: #ff9800;">⏰ ONTs sin Reporte hace mas de 12 horas (${withoutReport.length})</h3>
         `;
 
         withoutReport.forEach((ont, index) => {
@@ -427,7 +530,7 @@ function generateAlertsHTML(alerts) {
     if (stateChange.length > 0) {
         html += `
             <div class="section">
-                <h3>ONTs con Cambio de Estado (${stateChange.length})</h3>
+                <h3 style="color: #2196f3;">🔄 ONTs con Cambio de Estado (${stateChange.length})</h3>
         `;
 
         stateChange.forEach((ont, index) => {
@@ -438,12 +541,14 @@ function generateAlertsHTML(alerts) {
         html += `</div>`;
     }
 
-    // Agregar información de la empresa al final del contenido
+    // Agregar información de la empresa al final del contenido con diseño mejorado
     html += `
-        <div style="margin-top: 40px; padding: 20px; background-color: #f5f5f5; border-radius: 8px; text-align: center; border-top: 2px solid #667eea;">
-            <p style="margin: 0; color: #666; font-size: 14px;">
-                <strong>Sistema desarrollado por:</strong><br>
-                <span style="color: #667eea; font-weight: bold; font-size: 16px;">AAD INGENIERIA SRL</span>
+        <div style="margin-top: 48px; padding: 24px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 12px; text-align: center; border: 2px solid #667eea; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);">
+            <p style="margin: 0 0 8px 0; color: #555; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">
+                Sistema desarrollado por
+            </p>
+            <p style="margin: 0; color: #667eea; font-weight: 700; font-size: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                AAD INGENIERIA SRL
             </p>
         </div>
     `;
