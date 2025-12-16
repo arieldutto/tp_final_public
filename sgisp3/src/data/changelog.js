@@ -3,6 +3,31 @@
 
 export const CHANGELOG = [
     {
+        version: "3.4.0",
+        date: "2025-12-15",
+        type: "minor", // minor: nuevas funcionalidades
+        changes: [
+            {
+                type: "feature",
+                icon: "bi-clock-history",
+                title: "Alertas de ONTs sin Reporte",
+                description: "Sistema de detección y notificación automática de ONTs que no se reportan hace más de 12 horas mediante Telegram"
+            },
+            {
+                type: "feature",
+                icon: "bi-arrow-repeat",
+                title: "Detección de Cambios de Estado",
+                description: "Notificaciones automáticas cuando una ONT cambia de estado (en línea, señal baja, desconectada) con comparación de estado anterior y actual"
+            },
+            {
+                type: "improvement",
+                icon: "bi-telegram",
+                title: "Mejora en Notificaciones de Telegram",
+                description: "Mensajes de alerta mejorados con resumen por tipo (señal baja, sin reporte, cambio de estado) y mejor organización de la información"
+            }
+        ]
+    },
+    {
         version: "3.3.0",
         date: "2025-12-14",
         type: "minor", // minor: nuevas funcionalidades

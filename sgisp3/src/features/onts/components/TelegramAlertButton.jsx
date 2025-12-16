@@ -12,7 +12,9 @@ function TelegramAlertButton({ ontsList }) {
         loading,
         error,
         result,
-        ontsWithLowSignal
+        ontsWithLowSignal,
+        ontsWithoutReport,
+        ontsWithStateChange
     } = useTelegramAlert(ontsList);
 
     // Usar el contexto global para el envío automático
@@ -31,13 +33,26 @@ function TelegramAlertButton({ ontsList }) {
     }, [ontsList, updateOntsList]);
 
     const handleSendAlerts = () => {
-        if (ontsWithLowSignal.length === 0) {
-            alert('No hay ONTs con señal baja para enviar alertas');
+        const totalAlerts = ontsWithLowSignal.length + ontsWithoutReport.length + ontsWithStateChange.length;
+        
+        if (totalAlerts === 0) {
+            alert('No hay ONTs con problemas para enviar alertas');
             return;
         }
 
-        const confirmMessage = `¿Enviar alertas a Telegram para ${ontsWithLowSignal.length} ONT(s) con señal baja?`;
-        if (window.confirm(confirmMessage)) {
+        let alertMessage = `¿Enviar alertas a Telegram?\n\n`;
+        if (ontsWithLowSignal.length > 0) {
+            alertMessage += `🔴 Señal Baja: ${ontsWithLowSignal.length}\n`;
+        }
+        if (ontsWithoutReport.length > 0) {
+            alertMessage += `⏰ Sin Reporte (>12h): ${ontsWithoutReport.length}\n`;
+        }
+        if (ontsWithStateChange.length > 0) {
+            alertMessage += `🔄 Cambio de Estado: ${ontsWithStateChange.length}\n`;
+        }
+        alertMessage += `\nTotal: ${totalAlerts} ONT(s)`;
+
+        if (window.confirm(alertMessage)) {
             sendAlerts(false);
         }
     };
@@ -59,7 +74,7 @@ function TelegramAlertButton({ ontsList }) {
             <div className="d-flex flex-wrap gap-2 align-items-center mb-2">
                 <button
                     onClick={handleSendAlerts}
-                    disabled={loading || ontsWithLowSignal.length === 0}
+                    disabled={loading || (ontsWithLowSignal.length === 0 && ontsWithoutReport.length === 0 && ontsWithStateChange.length === 0)}
                     className="btn btn-warning d-flex align-items-center gap-2"
                 >
                     {loading ? (
@@ -70,7 +85,7 @@ function TelegramAlertButton({ ontsList }) {
                     ) : (
                         <>
                             <i className="bi bi-telegram"></i>
-                            Enviar Alertas Manual ({ontsWithLowSignal.length})
+                            Enviar Alertas Manual ({ontsWithLowSignal.length + ontsWithoutReport.length + ontsWithStateChange.length})
                         </>
                     )}
                 </button>
@@ -121,10 +136,20 @@ function TelegramAlertButton({ ontsList }) {
                 </div>
             )}
 
-            {ontsWithLowSignal.length === 0 && (
+            {(ontsWithLowSignal.length === 0 && ontsWithoutReport.length === 0 && ontsWithStateChange.length === 0) && (
                 <div className="alert alert-info mt-2" role="alert">
                     <i className="bi bi-info-circle-fill me-2"></i>
-                    No hay ONTs con señal baja en este momento
+                    No hay ONTs con problemas en este momento
+                </div>
+            )}
+
+            {(ontsWithLowSignal.length > 0 || ontsWithoutReport.length > 0 || ontsWithStateChange.length > 0) && (
+                <div className="alert alert-warning mt-2" role="alert">
+                    <i className="bi bi-info-circle-fill me-2"></i>
+                    <strong>Alertas pendientes:</strong>
+                    {ontsWithLowSignal.length > 0 && <span className="ms-2">🔴 Señal Baja: {ontsWithLowSignal.length}</span>}
+                    {ontsWithoutReport.length > 0 && <span className="ms-2">⏰ Sin Reporte: {ontsWithoutReport.length}</span>}
+                    {ontsWithStateChange.length > 0 && <span className="ms-2">🔄 Cambio Estado: {ontsWithStateChange.length}</span>}
                 </div>
             )}
 

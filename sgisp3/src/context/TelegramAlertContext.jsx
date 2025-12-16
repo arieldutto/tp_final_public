@@ -31,6 +31,61 @@ export function TelegramAlertProvider({ children }) {
     }, [ontsList]);
 
     /**
+     * Filtra las ONTs que no se reportan hace más de 12 horas
+     */
+    const getOntsWithoutReport = useCallback(() => {
+        if (!ontsList || ontsList.length === 0) return [];
+
+        const twelveHoursAgo = new Date();
+        twelveHoursAgo.setHours(twelveHoursAgo.getHours() - 12);
+
+        return ontsList.filter(ont => {
+            if (!ont.ont_lastinform_local) return true;
+            
+            try {
+                const lastReport = new Date(ont.ont_lastinform_local);
+                return lastReport < twelveHoursAgo;
+            } catch (e) {
+                return true;
+            }
+        });
+    }, [ontsList]);
+
+    /**
+     * Detecta cambios de estado comparando con el estado anterior
+     */
+    const getOntsWithStateChange = useCallback(() => {
+        if (!ontsList || ontsList.length === 0) return { changedOnts: [], previousStates: {} };
+
+        const previousStateKey = 'telegram_onts_previous_state';
+        const previousStateJson = localStorage.getItem(previousStateKey);
+        const previousState = previousStateJson ? JSON.parse(previousStateJson) : {};
+
+        const changedOnts = ontsList.filter(ont => {
+            const previous = previousState[ont.id];
+            if (!previous) return false;
+            
+            const currentEstado = ont.RX_Estado || 'unknown';
+            const previousEstado = previous.RX_Estado || 'unknown';
+            
+            return currentEstado !== previousEstado;
+        });
+
+        // Guardar estado actual
+        const currentState = {};
+        ontsList.forEach(ont => {
+            currentState[ont.id] = {
+                RX_Estado: ont.RX_Estado || 'unknown',
+                RX_Power: ont.RX_Power,
+                ont_lastinform_local: ont.ont_lastinform_local
+            };
+        });
+        localStorage.setItem(previousStateKey, JSON.stringify(currentState));
+
+        return { changedOnts, previousStates: previousState };
+    }, [ontsList]);
+
+    /**
      * Genera un hash simple de las ONTs con señal baja para detectar cambios
      */
     const generateOntsHash = useCallback((onts) => {
@@ -53,22 +108,39 @@ export function TelegramAlertProvider({ children }) {
      */
     const sendAutoAlerts = useCallback(async () => {
         const ontsWithLowSignal = getOntsWithLowSignal();
+        const ontsWithoutReport = getOntsWithoutReport();
+        const stateChangeData = getOntsWithStateChange();
+        const ontsWithStateChange = stateChangeData.changedOnts || [];
+        const previousStates = stateChangeData.previousStates || {};
 
-        if (ontsWithLowSignal.length === 0) {
+        const allAlerts = {
+            lowSignal: ontsWithLowSignal,
+            withoutReport: ontsWithoutReport,
+            stateChange: ontsWithStateChange,
+            previousStates: previousStates
+        };
+
+        const totalAlerts = ontsWithLowSignal.length + ontsWithoutReport.length + ontsWithStateChange.length;
+
+        if (totalAlerts === 0) {
             return;
         }
 
         // Generar hash para detectar si hay cambios
-        const currentHash = generateOntsHash(ontsWithLowSignal);
+        const currentHash = generateOntsHash([
+            ...ontsWithLowSignal,
+            ...ontsWithoutReport,
+            ...ontsWithStateChange
+        ]);
 
         // Si no hay cambios, no enviar
         if (lastSentHashRef.current === currentHash) {
-            console.log('No hay cambios en las ONTs con señal baja, omitiendo envío automático');
+            console.log('No hay cambios en las ONTs, omitiendo envío automático');
             return;
         }
 
         try {
-            const result = await sendMultipleOntAlerts(ontsWithLowSignal);
+            const result = await sendMultipleOntAlerts(allAlerts);
 
             // Actualizar hash solo si el envío fue exitoso
             if (result.ok && result.sent > 0) {
@@ -81,7 +153,7 @@ export function TelegramAlertProvider({ children }) {
         } catch (error) {
             console.error('Error en envío automático de alertas:', error);
         }
-    }, [getOntsWithLowSignal, generateOntsHash]);
+    }, [getOntsWithLowSignal, getOntsWithoutReport, getOntsWithStateChange, generateOntsHash]);
 
     /**
      * Activa o desactiva el envío automático

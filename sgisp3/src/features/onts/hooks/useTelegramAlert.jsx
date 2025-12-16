@@ -28,6 +28,72 @@ export function useTelegramAlert(ontsList, autoSendEnabled = false, intervalMinu
     }, [ontsList]);
 
     /**
+     * Filtra las ONTs que no se reportan hace más de 12 horas
+     * @returns {Array} Array de ONTs sin reporte
+     */
+    const getOntsWithoutReport = useCallback(() => {
+        if (!ontsList || ontsList.length === 0) return [];
+
+        const twelveHoursAgo = new Date();
+        twelveHoursAgo.setHours(twelveHoursAgo.getHours() - 12);
+
+        return ontsList.filter(ont => {
+            if (!ont.ont_lastinform_local) return true; // Si no tiene fecha, considerarla sin reporte
+            
+            try {
+                const lastReport = new Date(ont.ont_lastinform_local);
+                return lastReport < twelveHoursAgo;
+            } catch (e) {
+                return true; // Si hay error parseando la fecha, considerarla sin reporte
+            }
+        });
+    }, [ontsList]);
+
+    /**
+     * Detecta cambios de estado comparando con el estado anterior
+     * @returns {Object} { changedOnts: Array, previousStates: Object }
+     */
+    const getOntsWithStateChange = useCallback(() => {
+        if (!ontsList || ontsList.length === 0) return { changedOnts: [], previousStates: {} };
+
+        // Obtener estado anterior del localStorage
+        const previousStateKey = 'telegram_onts_previous_state';
+        const previousStateJson = localStorage.getItem(previousStateKey);
+        const previousState = previousStateJson ? JSON.parse(previousStateJson) : {};
+
+        // Detectar cambios
+        const changedOnts = [];
+        ontsList.forEach(ont => {
+            const previous = previousState[ont.id];
+            if (!previous) {
+                // Primera vez que vemos esta ONT, no es un cambio
+                return;
+            }
+            
+            // Comparar estado
+            const currentEstado = ont.RX_Estado || 'unknown';
+            const previousEstado = previous.RX_Estado || 'unknown';
+            
+            if (currentEstado !== previousEstado) {
+                changedOnts.push(ont);
+            }
+        });
+
+        // Guardar estado actual para la próxima comparación
+        const currentState = {};
+        ontsList.forEach(ont => {
+            currentState[ont.id] = {
+                RX_Estado: ont.RX_Estado || 'unknown',
+                RX_Power: ont.RX_Power,
+                ont_lastinform_local: ont.ont_lastinform_local
+            };
+        });
+        localStorage.setItem(previousStateKey, JSON.stringify(currentState));
+
+        return { changedOnts, previousStates: previousState };
+    }, [ontsList]);
+
+    /**
      * Genera un hash simple de las ONTs con señal baja para detectar cambios
      * @param {Array} onts - Array de ONTs
      * @returns {string} Hash de las ONTs
@@ -42,7 +108,7 @@ export function useTelegramAlert(ontsList, autoSendEnabled = false, intervalMinu
     };
 
     /**
-     * Envía alertas a Telegram para todas las ONTs con señal baja
+     * Envía alertas a Telegram para todas las ONTs con problemas
      * @param {boolean} isAutoSend - Si es un envío automático (para evitar mostrar loading)
      * @returns {Promise<void>}
      */
@@ -57,13 +123,27 @@ export function useTelegramAlert(ontsList, autoSendEnabled = false, intervalMinu
 
         try {
             const ontsWithLowSignal = getOntsWithLowSignal();
+            const ontsWithoutReport = getOntsWithoutReport();
+            const stateChangeData = getOntsWithStateChange();
+            const ontsWithStateChange = stateChangeData.changedOnts || [];
+            const previousStates = stateChangeData.previousStates || {};
 
-            if (ontsWithLowSignal.length === 0) {
+            // Combinar todas las alertas
+            const allAlerts = {
+                lowSignal: ontsWithLowSignal,
+                withoutReport: ontsWithoutReport,
+                stateChange: ontsWithStateChange,
+                previousStates: previousStates
+            };
+
+            const totalAlerts = ontsWithLowSignal.length + ontsWithoutReport.length + ontsWithStateChange.length;
+
+            if (totalAlerts === 0) {
                 if (!isAutoSend) {
                     setResult({
                         ok: true,
                         sent: 0,
-                        message: 'No hay ONTs con señal baja para enviar alertas'
+                        message: 'No hay ONTs con problemas para enviar alertas'
                     });
                 }
                 if (!isAutoSend) {
@@ -72,16 +152,20 @@ export function useTelegramAlert(ontsList, autoSendEnabled = false, intervalMinu
                 return;
             }
 
-            // Generar hash para detectar si hay cambios
-            const currentHash = generateOntsHash(ontsWithLowSignal);
+            // Generar hash para detectar si hay cambios (incluyendo todos los tipos)
+            const currentHash = generateOntsHash([
+                ...ontsWithLowSignal,
+                ...ontsWithoutReport,
+                ...ontsWithStateChange
+            ]);
 
             // Si es envío automático y no hay cambios, no enviar
             if (isAutoSend && lastSentHashRef.current === currentHash) {
-                console.log('No hay cambios en las ONTs con señal baja, omitiendo envío automático');
+                console.log('No hay cambios en las ONTs, omitiendo envío automático');
                 return;
             }
 
-            const result = await sendMultipleOntAlerts(ontsWithLowSignal);
+            const result = await sendMultipleOntAlerts(allAlerts);
 
             // Actualizar hash solo si el envío fue exitoso
             if (result.ok && result.sent > 0) {
@@ -154,6 +238,8 @@ export function useTelegramAlert(ontsList, autoSendEnabled = false, intervalMinu
         error,
         result,
         ontsWithLowSignal: getOntsWithLowSignal(),
+        ontsWithoutReport: getOntsWithoutReport(),
+        ontsWithStateChange: getOntsWithStateChange().changedOnts || [],
         isAutoSendEnabled,
         toggleAutoSend,
         lastAutoSend

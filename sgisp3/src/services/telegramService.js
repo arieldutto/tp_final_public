@@ -155,12 +155,99 @@ function groupOntsByUrgency(onts) {
 }
 
 /**
- * Envía alertas para múltiples ONTs con señal baja
- * @param {Array} onts - Array de objetos ONT con señal baja
+ * Formatea un mensaje de alerta para una ONT sin reporte
+ * @param {Object} ont - Objeto con los datos de la ONT
+ * @param {number} index - Índice de la ONT en la lista
+ * @returns {string} Mensaje formateado en Markdown
+ */
+export function formatOntNoReportMessage(ont, index = null) {
+    const cliente = ont.abonado || 'Sin asignar';
+    const serie = ont.serialnumber || 'N/A';
+    const modelo = ont.productclass || 'N/A';
+    const ultimoReporte = ont.ont_lastinform_local || 'N/A';
+    
+    // Calcular horas sin reporte
+    let horasSinReporte = 'N/A';
+    if (ont.ont_lastinform_local) {
+        try {
+            const lastReport = new Date(ont.ont_lastinform_local);
+            const ahora = new Date();
+            const diffMs = ahora - lastReport;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            horasSinReporte = `${diffHours} horas`;
+        } catch (e) {
+            horasSinReporte = 'N/A';
+        }
+    }
+
+    const numero = index !== null ? `${index + 1}. ` : '';
+
+    return `${numero}⏰ *${cliente}* - Sin reporte hace más de 12 horas
+🔢 *Serie:* ${serie}
+📦 *Modelo:* ${modelo}
+🕐 *Último Reporte:* ${ultimoReporte}
+⏱️ *Tiempo sin reporte:* ${horasSinReporte}
+━━━━━━━━━━━━━━━━━━━━`;
+}
+
+/**
+ * Formatea un mensaje de alerta para una ONT que cambió de estado
+ * @param {Object} ont - Objeto con los datos de la ONT
+ * @param {Object} previousState - Estado anterior de la ONT
+ * @param {number} index - Índice de la ONT en la lista
+ * @returns {string} Mensaje formateado en Markdown
+ */
+export function formatOntStateChangeMessage(ont, previousState, index = null) {
+    const cliente = ont.abonado || 'Sin asignar';
+    const serie = ont.serialnumber || 'N/A';
+    const modelo = ont.productclass || 'N/A';
+    
+    const estadoAnterior = previousState?.RX_Estado || 'unknown';
+    const estadoActual = ont.RX_Estado || 'unknown';
+    
+    const estados = {
+        'success': '✅ En línea',
+        'danger': '🔴 Señal baja',
+        'warning': '⚠️ Advertencia',
+        'unknown': '❓ Desconocido'
+    };
+
+    const numero = index !== null ? `${index + 1}. ` : '';
+
+    return `${numero}🔄 *${cliente}* - Cambio de Estado
+🔢 *Serie:* ${serie}
+📦 *Modelo:* ${modelo}
+📊 *Estado Anterior:* ${estados[estadoAnterior] || estadoAnterior}
+📊 *Estado Actual:* ${estados[estadoActual] || estadoActual}
+━━━━━━━━━━━━━━━━━━━━`;
+}
+
+/**
+ * Envía alertas para múltiples ONTs con diferentes tipos de problemas
+ * @param {Object|Array} alerts - Objeto con arrays de ONTs o Array simple (compatibilidad)
  * @returns {Promise<{ok: boolean, sent: number, errors: Array}>}
  */
-export async function sendMultipleOntAlerts(onts) {
-    if (!onts || onts.length === 0) {
+export async function sendMultipleOntAlerts(alerts) {
+    // Compatibilidad: si es un array, tratarlo como señal baja
+    let ontsWithLowSignal = [];
+    let ontsWithoutReport = [];
+    let ontsWithStateChange = [];
+    let previousStates = {};
+
+    if (Array.isArray(alerts)) {
+        // Modo legacy: solo señal baja
+        ontsWithLowSignal = alerts;
+    } else {
+        // Nuevo modo: objeto con diferentes tipos
+        ontsWithLowSignal = alerts.lowSignal || [];
+        ontsWithoutReport = alerts.withoutReport || [];
+        ontsWithStateChange = alerts.stateChange || [];
+        previousStates = alerts.previousStates || {};
+    }
+
+    const totalAlerts = ontsWithLowSignal.length + ontsWithoutReport.length + ontsWithStateChange.length;
+
+    if (totalAlerts === 0) {
         return {
             ok: true,
             sent: 0,
@@ -168,47 +255,64 @@ export async function sendMultipleOntAlerts(onts) {
         };
     }
 
-    // Ordenar por urgencia (señal más baja primero)
-    const sortedOnts = sortOntsByUrgency(onts);
-    const groups = groupOntsByUrgency(sortedOnts);
-
     const errors = [];
     let sent = 0;
 
-    // Construir mensaje agrupado y ordenado
-    let header = `🚨 *ALERTA: ${onts.length} ONT(s) con Señal Baja*\n\n`;
+    // Construir mensaje completo
+    let header = `🚨 *ALERTAS DE ONT*\n\n`;
 
-    // Agregar resumen por urgencia
+    // Resumen por tipo
     const summary = [];
-    if (groups.muyCritica.length > 0) {
-        summary.push(`🔴 Muy Crítica (≤-27dbm): ${groups.muyCritica.length}`);
+    if (ontsWithLowSignal.length > 0) {
+        summary.push(`🔴 Señal Baja: ${ontsWithLowSignal.length}`);
     }
-    if (groups.critica.length > 0) {
-        summary.push(`🟠 Crítica (-27 a -25dbm): ${groups.critica.length}`);
+    if (ontsWithoutReport.length > 0) {
+        summary.push(`⏰ Sin Reporte (>12h): ${ontsWithoutReport.length}`);
     }
-    if (groups.advertencia.length > 0) {
-        summary.push(`🟡 Advertencia (-25 a -23dbm): ${groups.advertencia.length}`);
-    }
-    if (groups.baja.length > 0) {
-        summary.push(`⚠️ Baja (>-23dbm): ${groups.baja.length}`);
+    if (ontsWithStateChange.length > 0) {
+        summary.push(`🔄 Cambio de Estado: ${ontsWithStateChange.length}`);
     }
 
     if (summary.length > 0) {
-        header += `*Resumen por Urgencia:*\n${summary.join('\n')}\n\n`;
-        header += `*Listado ordenado por urgencia (más críticas primero):*\n\n`;
+        header += `*Resumen:*\n${summary.join('\n')}\n\n`;
     }
 
-    // Construir lista de ONTs ordenadas
-    const allOntsOrdered = [
-        ...groups.muyCritica,
-        ...groups.critica,
-        ...groups.advertencia,
-        ...groups.baja
-    ];
+    // Construir mensajes por tipo
+    const messages = [];
 
-    const messages = allOntsOrdered.map((ont, index) => {
-        return formatOntAlertMessage(ont, index);
-    });
+    // ONTs con señal baja
+    if (ontsWithLowSignal.length > 0) {
+        const sortedOnts = sortOntsByUrgency(ontsWithLowSignal);
+        const groups = groupOntsByUrgency(sortedOnts);
+        const allOntsOrdered = [
+            ...groups.muyCritica,
+            ...groups.critica,
+            ...groups.advertencia,
+            ...groups.baja
+        ];
+
+        messages.push(`*🔴 ONTs con Señal Baja (${ontsWithLowSignal.length}):*\n`);
+        allOntsOrdered.forEach((ont, index) => {
+            messages.push(formatOntAlertMessage(ont, index));
+        });
+    }
+
+    // ONTs sin reporte
+    if (ontsWithoutReport.length > 0) {
+        messages.push(`\n*⏰ ONTs sin Reporte hace más de 12 horas (${ontsWithoutReport.length}):*\n`);
+        ontsWithoutReport.forEach((ont, index) => {
+            messages.push(formatOntNoReportMessage(ont, index));
+        });
+    }
+
+    // ONTs con cambio de estado
+    if (ontsWithStateChange.length > 0) {
+        messages.push(`\n*🔄 ONTs con Cambio de Estado (${ontsWithStateChange.length}):*\n`);
+        ontsWithStateChange.forEach((ont, index) => {
+            const previousState = previousStates[ont.id] || {};
+            messages.push(formatOntStateChangeMessage(ont, previousState, index));
+        });
+    }
 
     const fullMessage = header + messages.join('\n\n');
 
@@ -219,15 +323,78 @@ export async function sendMultipleOntAlerts(onts) {
         const parts = [];
         let currentPart = header;
 
-        allOntsOrdered.forEach((ont, index) => {
-            const ontMessage = formatOntAlertMessage(ont, index);
-            if ((currentPart + ontMessage).length > maxLength) {
+        // Agregar ONTs con señal baja
+        if (ontsWithLowSignal.length > 0) {
+            const sortedOnts = sortOntsByUrgency(ontsWithLowSignal);
+            const groups = groupOntsByUrgency(sortedOnts);
+            const allOntsOrdered = [
+                ...groups.muyCritica,
+                ...groups.critica,
+                ...groups.advertencia,
+                ...groups.baja
+            ];
+
+            const sectionHeader = `*🔴 ONTs con Señal Baja (${ontsWithLowSignal.length}):*\n`;
+            if ((currentPart + sectionHeader).length > maxLength) {
                 parts.push(currentPart);
-                currentPart = ontMessage;
+                currentPart = sectionHeader;
             } else {
-                currentPart += '\n\n' + ontMessage;
+                currentPart += sectionHeader;
             }
-        });
+
+            allOntsOrdered.forEach((ont, index) => {
+                const ontMessage = formatOntAlertMessage(ont, index);
+                if ((currentPart + ontMessage).length > maxLength) {
+                    parts.push(currentPart);
+                    currentPart = ontMessage;
+                } else {
+                    currentPart += '\n\n' + ontMessage;
+                }
+            });
+        }
+
+        // Agregar ONTs sin reporte
+        if (ontsWithoutReport.length > 0) {
+            const sectionHeader = `\n*⏰ ONTs sin Reporte (${ontsWithoutReport.length}):*\n`;
+            if ((currentPart + sectionHeader).length > maxLength) {
+                parts.push(currentPart);
+                currentPart = sectionHeader;
+            } else {
+                currentPart += sectionHeader;
+            }
+
+            ontsWithoutReport.forEach((ont, index) => {
+                const ontMessage = formatOntNoReportMessage(ont, index);
+                if ((currentPart + ontMessage).length > maxLength) {
+                    parts.push(currentPart);
+                    currentPart = ontMessage;
+                } else {
+                    currentPart += '\n\n' + ontMessage;
+                }
+            });
+        }
+
+        // Agregar ONTs con cambio de estado
+        if (ontsWithStateChange.length > 0) {
+            const sectionHeader = `\n*🔄 ONTs con Cambio de Estado (${ontsWithStateChange.length}):*\n`;
+            if ((currentPart + sectionHeader).length > maxLength) {
+                parts.push(currentPart);
+                currentPart = sectionHeader;
+            } else {
+                currentPart += sectionHeader;
+            }
+
+            ontsWithStateChange.forEach((ont, index) => {
+                const previousState = previousStates[ont.id] || {};
+                const ontMessage = formatOntStateChangeMessage(ont, previousState, index);
+                if ((currentPart + ontMessage).length > maxLength) {
+                    parts.push(currentPart);
+                    currentPart = ontMessage;
+                } else {
+                    currentPart += '\n\n' + ontMessage;
+                }
+            });
+        }
 
         if (currentPart) {
             parts.push(currentPart);
@@ -248,7 +415,7 @@ export async function sendMultipleOntAlerts(onts) {
         // Enviar mensaje único
         const result = await sendTelegramMessage(fullMessage);
         if (result.ok) {
-            sent = onts.length;
+            sent = totalAlerts;
         } else {
             errors.push(result.error);
         }
