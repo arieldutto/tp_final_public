@@ -3,6 +3,25 @@
 
 export const CHANGELOG = [
     {
+        version: "3.5.0",
+        date: "2025-12-16",
+        type: "minor", // minor: nuevas funcionalidades
+        changes: [
+            {
+                type: "feature",
+                icon: "bi-stopwatch",
+                title: "Tracking de Tiempo en Estado Crítico",
+                description: "Sistema de seguimiento automático del tiempo que lleva cada ONT en estado crítico (señal baja o potencia ≤ -25 dbm). El tiempo se muestra en alertas de Telegram y Email, y se elimina automáticamente cuando la ONT vuelve a valores normales"
+            },
+            {
+                type: "improvement",
+                icon: "bi-envelope-check",
+                title: "Mejora en Diseño de Alertas por Email",
+                description: "Rediseño visual de las tarjetas de alerta en emails con mejor jerarquía de información, emojis de estado (crítica, urgente, advertencia) y diseño más limpio y profesional"
+            }
+        ]
+    },
+    {
         version: "3.4.0",
         date: "2025-12-15",
         type: "minor", // minor: nuevas funcionalidades
