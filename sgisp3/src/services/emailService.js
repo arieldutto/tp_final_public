@@ -4,6 +4,7 @@
  */
 
 import { API_SGISP } from '../config';
+import { getOntCriticalTime, formatCriticalTime } from '../utils/ontCriticalTimeTracker';
 
 /**
  * Envía un email genérico
@@ -127,62 +128,78 @@ function formatOntAlertHTML(ont, index = null) {
     const urgencyLevel = getUrgencyLevel(potencia);
     const urgencyColor = getUrgencyColor(potencia);
 
-    // Determinar si es crítica o muy crítica para destacar más
-    const isVeryCritical = potencia !== null && potencia <= -27;
-    const isCritical = potencia !== null && potencia <= -25 && potencia > -27;
+    // Obtener tiempo en estado crítico
+    const criticalTime = getOntCriticalTime(ont);
+    const tiempoCritico = criticalTime ? formatCriticalTime(criticalTime) : null;
 
-    // Colores y estilos según urgencia
-    let cardBgColor = '#fff';
-    let cardBorderColor = urgencyColor;
-    let cardShadow = '0 2px 4px rgba(0,0,0,0.1)';
-    let headerBg = `linear-gradient(135deg, ${urgencyColor}15 0%, ${urgencyColor}05 100%)`;
+    // Determinar urgencia y emoji de estado
+    let statusEmoji = '⚠️';
+    let statusText = 'Advertencia';
+    let cardBgColor = '#ffffff';
+    let cardBorderColor = '#ffc107';
+    let cardShadow = '0 2px 8px rgba(255, 193, 7, 0.15)';
 
-    if (isVeryCritical) {
+    if (potencia !== null && potencia <= -27) {
+        statusEmoji = '🔴';
+        statusText = 'MUY CRITICA';
         cardBgColor = '#fff5f5';
         cardBorderColor = '#f44336';
-        cardShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
-        headerBg = 'linear-gradient(135deg, #ffebee 0%, #fff5f5 100%)';
-    } else if (isCritical) {
+        cardShadow = '0 4px 16px rgba(244, 67, 54, 0.25)';
+    } else if (potencia !== null && potencia <= -25) {
+        statusEmoji = '🟠';
+        statusText = 'CRITICA';
         cardBgColor = '#fff8e1';
         cardBorderColor = '#ff9800';
-        cardShadow = '0 3px 8px rgba(255, 152, 0, 0.2)';
-        headerBg = 'linear-gradient(135deg, #fff3e0 0%, #fff8e1 100%)';
+        cardShadow = '0 3px 12px rgba(255, 152, 0, 0.2)';
+    } else if (potencia !== null && potencia <= -23) {
+        statusEmoji = '🟡';
+        statusText = 'URGENTE';
+        cardBgColor = '#fffde7';
+        cardBorderColor = '#ffc107';
+        cardShadow = '0 2px 8px rgba(255, 193, 7, 0.15)';
     }
 
     const numero = index !== null ? `${index + 1}. ` : '';
 
     return `
-        <div style="margin-bottom: 24px; padding: 0; background-color: ${cardBgColor}; border-left: 5px solid ${cardBorderColor}; border-radius: 8px; box-shadow: ${cardShadow}; overflow: hidden; transition: all 0.3s ease;">
-            <div style="background: ${headerBg}; padding: 16px 20px; border-bottom: 1px solid ${cardBorderColor}30;">
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="font-size: 28px; line-height: 1;">${urgencyIcon}</span>
-                        <div>
-                            <strong style="font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 4px;">${numero}${cliente}</strong>
-                            <span style="font-size: 13px; color: ${urgencyColor}; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">${urgencyLevel}</span>
+        <div style="margin-bottom: 20px; padding: 0; background-color: ${cardBgColor}; border: 2px solid ${cardBorderColor}; border-radius: 12px; box-shadow: ${cardShadow}; overflow: hidden;">
+            <div style="padding: 20px;">
+                <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                    <div style="font-size: 36px; line-height: 1; flex-shrink: 0;">${statusEmoji}</div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; line-height: 1.3;">
+                            ${numero}${cliente}
+                        </div>
+                        <div style="font-size: 18px; font-weight: 600; color: ${cardBorderColor}; margin-bottom: 4px;">
+                            ${potenciaFormatted}
+                        </div>
+                        ${tiempoCritico ? `
+                        <div style="font-size: 13px; color: ${cardBorderColor}; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                            <span>⏱️</span>
+                            <span>Tiempo en estado critico: ${tiempoCritico}</span>
+                        </div>
+                        ` : ''}
+                        <div style="display: inline-block; padding: 4px 12px; background-color: ${cardBorderColor}; color: white; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">
+                            ${statusText}
                         </div>
                     </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 20px; font-weight: 700; color: ${urgencyColor}; line-height: 1.2;">${potenciaFormatted}</div>
-                        <div style="font-size: 11px; color: #666; margin-top: 2px;">Potencia RX</div>
+                </div>
+                <div style="border-top: 1px solid ${cardBorderColor}30; padding-top: 16px; margin-top: 16px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
+                        <div>
+                            <div style="color: #666; margin-bottom: 4px;">Serie</div>
+                            <div style="color: #1a1a1a; font-weight: 600; font-family: 'Courier New', monospace;">${serie}</div>
+                        </div>
+                        <div>
+                            <div style="color: #666; margin-bottom: 4px;">Modelo</div>
+                            <div style="color: #1a1a1a; font-weight: 600;">${modelo}</div>
+                        </div>
+                        <div style="grid-column: 1 / -1;">
+                            <div style="color: #666; margin-bottom: 4px;">Ultimo Reporte</div>
+                            <div style="color: #1a1a1a; font-weight: 500;">${ultimoReporte}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div style="padding: 16px 20px;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; width: 140px; font-size: 13px;"><strong>Serie:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px; font-family: 'Courier New', monospace;">${serie}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Modelo:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${modelo}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Ultimo Reporte:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${ultimoReporte}</td>
-                    </tr>
-                </table>
             </div>
         </div>
     `;
@@ -215,61 +232,62 @@ function formatOntNoReportHTML(ont, index = null) {
         }
     }
 
-    // Determinar urgencia según horas sin reporte
-    const isVeryUrgent = horasNumero >= 24;
-    const isUrgent = horasNumero >= 18;
-
+    // Determinar urgencia y emoji según horas sin reporte
+    let statusEmoji = '⏰';
+    let statusText = 'SIN REPORTE';
     let cardBgColor = '#fffbf0';
     let cardBorderColor = '#ffc107';
-    let cardShadow = '0 2px 4px rgba(255, 193, 7, 0.2)';
-    let headerBg = 'linear-gradient(135deg, #fff8e1 0%, #fffbf0 100%)';
+    let cardShadow = '0 2px 8px rgba(255, 193, 7, 0.15)';
 
-    if (isVeryUrgent) {
+    if (horasNumero >= 24) {
+        statusEmoji = '🔴';
+        statusText = 'MUY URGENTE';
         cardBgColor = '#fff3e0';
-        cardBorderColor = '#ff9800';
-        cardShadow = '0 4px 12px rgba(255, 152, 0, 0.3)';
-        headerBg = 'linear-gradient(135deg, #ffe0b2 0%, #fff3e0 100%)';
-    } else if (isUrgent) {
+        cardBorderColor = '#ff5722';
+        cardShadow = '0 4px 16px rgba(255, 87, 34, 0.25)';
+    } else if (horasNumero >= 18) {
+        statusEmoji = '🟠';
+        statusText = 'URGENTE';
         cardBgColor = '#fff8e1';
-        cardBorderColor = '#ffc107';
-        cardShadow = '0 3px 8px rgba(255, 193, 7, 0.25)';
-        headerBg = 'linear-gradient(135deg, #ffecb3 0%, #fff8e1 100%)';
+        cardBorderColor = '#ff9800';
+        cardShadow = '0 3px 12px rgba(255, 152, 0, 0.2)';
     }
 
     const numero = index !== null ? `${index + 1}. ` : '';
 
     return `
-        <div style="margin-bottom: 24px; padding: 0; background-color: ${cardBgColor}; border-left: 5px solid ${cardBorderColor}; border-radius: 8px; box-shadow: ${cardShadow}; overflow: hidden;">
-            <div style="background: ${headerBg}; padding: 16px 20px; border-bottom: 1px solid ${cardBorderColor}30;">
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="font-size: 28px; line-height: 1;">⏰</span>
-                        <div>
-                            <strong style="font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 4px;">${numero}${cliente}</strong>
-                            <span style="font-size: 13px; color: ${cardBorderColor}; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Sin Reporte</span>
+        <div style="margin-bottom: 20px; padding: 0; background-color: ${cardBgColor}; border: 2px solid ${cardBorderColor}; border-radius: 12px; box-shadow: ${cardShadow}; overflow: hidden;">
+            <div style="padding: 20px;">
+                <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                    <div style="font-size: 36px; line-height: 1; flex-shrink: 0;">${statusEmoji}</div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; line-height: 1.3;">
+                            ${numero}${cliente}
+                        </div>
+                        <div style="font-size: 18px; font-weight: 600; color: ${cardBorderColor}; margin-bottom: 4px;">
+                            ${horasSinReporte} sin reporte
+                        </div>
+                        <div style="display: inline-block; padding: 4px 12px; background-color: ${cardBorderColor}; color: white; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">
+                            ${statusText}
                         </div>
                     </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 20px; font-weight: 700; color: ${cardBorderColor}; line-height: 1.2;">${horasSinReporte}</div>
-                        <div style="font-size: 11px; color: #666; margin-top: 2px;">Tiempo Offline</div>
+                </div>
+                <div style="border-top: 1px solid ${cardBorderColor}30; padding-top: 16px; margin-top: 16px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
+                        <div>
+                            <div style="color: #666; margin-bottom: 4px;">Serie</div>
+                            <div style="color: #1a1a1a; font-weight: 600; font-family: 'Courier New', monospace;">${serie}</div>
+                        </div>
+                        <div>
+                            <div style="color: #666; margin-bottom: 4px;">Modelo</div>
+                            <div style="color: #1a1a1a; font-weight: 600;">${modelo}</div>
+                        </div>
+                        <div style="grid-column: 1 / -1;">
+                            <div style="color: #666; margin-bottom: 4px;">Ultimo Reporte</div>
+                            <div style="color: #1a1a1a; font-weight: 500;">${ultimoReporte}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div style="padding: 16px 20px;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; width: 140px; font-size: 13px;"><strong>Serie:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px; font-family: 'Courier New', monospace;">${serie}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Modelo:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${modelo}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Ultimo Reporte:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${ultimoReporte}</td>
-                    </tr>
-                </table>
             </div>
         </div>
     `;
@@ -306,63 +324,69 @@ function formatOntStateChangeHTML(ont, previousState, index = null) {
 
     // Determinar si el cambio es crítico (empeoró)
     const isCriticalChange = estadoAnterior === 'success' && estadoActual === 'danger';
+    const isImprovement = estadoAnterior === 'danger' && estadoActual === 'success';
 
+    let statusEmoji = '🔄';
+    let statusText = 'CAMBIO DE ESTADO';
     let cardBgColor = '#e8f4fd';
     let cardBorderColor = '#2196f3';
-    let cardShadow = '0 2px 4px rgba(33, 150, 243, 0.2)';
-    let headerBg = 'linear-gradient(135deg, #e3f2fd 0%, #e8f4fd 100%)';
+    let cardShadow = '0 2px 8px rgba(33, 150, 243, 0.15)';
 
     if (isCriticalChange) {
+        statusEmoji = '🔴';
+        statusText = 'EMPEORO';
         cardBgColor = '#fff3e0';
-        cardBorderColor = '#ff9800';
-        cardShadow = '0 4px 12px rgba(255, 152, 0, 0.3)';
-        headerBg = 'linear-gradient(135deg, #ffe0b2 0%, #fff3e0 100%)';
+        cardBorderColor = '#ff5722';
+        cardShadow = '0 4px 16px rgba(255, 87, 34, 0.25)';
+    } else if (isImprovement) {
+        statusEmoji = '✅';
+        statusText = 'MEJORO';
+        cardBgColor = '#e8f5e9';
+        cardBorderColor = '#4caf50';
+        cardShadow = '0 2px 8px rgba(76, 175, 80, 0.15)';
     }
 
     const numero = index !== null ? `${index + 1}. ` : '';
 
     return `
-        <div style="margin-bottom: 24px; padding: 0; background-color: ${cardBgColor}; border-left: 5px solid ${cardBorderColor}; border-radius: 8px; box-shadow: ${cardShadow}; overflow: hidden;">
-            <div style="background: ${headerBg}; padding: 16px 20px; border-bottom: 1px solid ${cardBorderColor}30;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 28px; line-height: 1;">🔄</span>
-                    <div>
-                        <strong style="font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 4px;">${numero}${cliente}</strong>
-                        <span style="font-size: 13px; color: ${cardBorderColor}; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Cambio de Estado</span>
-                    </div>
-                </div>
-            </div>
-            <div style="padding: 16px 20px;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; width: 140px; font-size: 13px;"><strong>Serie:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px; font-family: 'Courier New', monospace;">${serie}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Modelo:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${modelo}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Estado Anterior:</strong></td>
-                        <td style="padding: 8px 0;">
-                            <span style="display: inline-flex; align-items: center; gap: 6px; color: ${estadoAnteriorInfo.color}; font-weight: 600; font-size: 13px;">
+        <div style="margin-bottom: 20px; padding: 0; background-color: ${cardBgColor}; border: 2px solid ${cardBorderColor}; border-radius: 12px; box-shadow: ${cardShadow}; overflow: hidden;">
+            <div style="padding: 20px;">
+                <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                    <div style="font-size: 36px; line-height: 1; flex-shrink: 0;">${statusEmoji}</div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; line-height: 1.3;">
+                            ${numero}${cliente}
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px; flex-wrap: wrap;">
+                            <span style="font-size: 14px; color: ${estadoAnteriorInfo.color};">
                                 ${estadoAnteriorInfo.icon} ${estadoAnteriorInfo.text}
                             </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Estado Actual:</strong></td>
-                        <td style="padding: 8px 0;">
-                            <span style="display: inline-flex; align-items: center; gap: 6px; color: ${estadoActualInfo.color}; font-weight: 700; font-size: 14px;">
+                            <span style="color: #999;">→</span>
+                            <span style="font-size: 15px; font-weight: 600; color: ${estadoActualInfo.color};">
                                 ${estadoActualInfo.icon} ${estadoActualInfo.text}
                             </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #666; font-size: 13px;"><strong>Potencia RX:</strong></td>
-                        <td style="padding: 8px 0; color: #1a1a1a; font-size: 13px;">${potencia}</td>
-                    </tr>
-                </table>
+                        </div>
+                        <div style="display: inline-block; padding: 4px 12px; background-color: ${cardBorderColor}; color: white; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">
+                            ${statusText}
+                        </div>
+                    </div>
+                </div>
+                <div style="border-top: 1px solid ${cardBorderColor}30; padding-top: 16px; margin-top: 16px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
+                        <div>
+                            <div style="color: #666; margin-bottom: 4px;">Serie</div>
+                            <div style="color: #1a1a1a; font-weight: 600; font-family: 'Courier New', monospace;">${serie}</div>
+                        </div>
+                        <div>
+                            <div style="color: #666; margin-bottom: 4px;">Modelo</div>
+                            <div style="color: #1a1a1a; font-weight: 600;">${modelo}</div>
+                        </div>
+                        <div>
+                            <div style="color: #666; margin-bottom: 4px;">Potencia RX</div>
+                            <div style="color: #1a1a1a; font-weight: 600;">${potencia}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     `;
@@ -585,21 +609,38 @@ function generateAlertsHTML(alerts) {
  * @returns {Promise<{ok: boolean, sent: number, errors: Array}>}
  */
 export async function sendMultipleOntAlertsByEmail(alerts, toEmail) {
+    // Importar función de actualización del tracker
+    const { updateCriticalTimeTracker } = await import('../utils/ontCriticalTimeTracker');
+
     // Compatibilidad: si es un array, tratarlo como señal baja
     let ontsWithLowSignal = [];
     let ontsWithoutReport = [];
     let ontsWithStateChange = [];
     let previousStates = {};
+    let allOnts = [];
 
     if (Array.isArray(alerts)) {
         // Modo legacy: solo señal baja
         ontsWithLowSignal = alerts;
+        allOnts = alerts;
     } else {
         // Nuevo modo: objeto con diferentes tipos
         ontsWithLowSignal = alerts.lowSignal || [];
         ontsWithoutReport = alerts.withoutReport || [];
         ontsWithStateChange = alerts.stateChange || [];
         previousStates = alerts.previousStates || {};
+
+        // Combinar todas las ONTs para actualizar el tracker
+        allOnts = [
+            ...ontsWithLowSignal,
+            ...ontsWithoutReport,
+            ...ontsWithStateChange
+        ];
+    }
+
+    // Actualizar tracker de tiempo crítico antes de generar el HTML
+    if (allOnts.length > 0) {
+        updateCriticalTimeTracker(allOnts);
     }
 
     const totalAlerts = ontsWithLowSignal.length + ontsWithoutReport.length + ontsWithStateChange.length;

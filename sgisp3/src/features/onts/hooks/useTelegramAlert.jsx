@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { sendMultipleOntAlerts } from '../../../services/telegramService';
+import { updateCriticalTimeTracker } from '../../../utils/ontCriticalTimeTracker';
 
 /**
  * Hook para manejar el envío de alertas de ONTs a Telegram
@@ -39,7 +40,7 @@ export function useTelegramAlert(ontsList, autoSendEnabled = false, intervalMinu
 
         return ontsList.filter(ont => {
             if (!ont.ont_lastinform_local) return true; // Si no tiene fecha, considerarla sin reporte
-            
+
             try {
                 const lastReport = new Date(ont.ont_lastinform_local);
                 return lastReport < twelveHoursAgo;
@@ -69,11 +70,11 @@ export function useTelegramAlert(ontsList, autoSendEnabled = false, intervalMinu
                 // Primera vez que vemos esta ONT, no es un cambio
                 return;
             }
-            
+
             // Comparar estado
             const currentEstado = ont.RX_Estado || 'unknown';
             const previousEstado = previous.RX_Estado || 'unknown';
-            
+
             if (currentEstado !== previousEstado) {
                 changedOnts.push(ont);
             }
@@ -127,6 +128,16 @@ export function useTelegramAlert(ontsList, autoSendEnabled = false, intervalMinu
             const stateChangeData = getOntsWithStateChange();
             const ontsWithStateChange = stateChangeData.changedOnts || [];
             const previousStates = stateChangeData.previousStates || {};
+
+            // Actualizar tracker de tiempo crítico con todas las ONTs
+            const allOnts = [
+                ...ontsWithLowSignal,
+                ...ontsWithoutReport,
+                ...ontsWithStateChange
+            ];
+            if (allOnts.length > 0) {
+                updateCriticalTimeTracker(allOnts);
+            }
 
             // Combinar todas las alertas
             const allAlerts = {

@@ -3,6 +3,8 @@
  * Requiere: VITE_TELEGRAM_BOT_TOKEN y VITE_TELEGRAM_CHAT_ID en variables de entorno
  */
 
+import { getOntCriticalTime, formatCriticalTime } from '../utils/ontCriticalTimeTracker';
+
 const TELEGRAM_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID;
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
@@ -99,14 +101,27 @@ export function formatOntAlertMessage(ont, index = null) {
 
     const urgencyIcon = getUrgencyIcon(potencia);
     const urgencyLevel = getUrgencyLevel(potencia);
+
+    // Obtener tiempo en estado crítico
+    const criticalTime = getOntCriticalTime(ont);
+    const tiempoCritico = criticalTime ? formatCriticalTime(criticalTime) : null;
+
     const numero = index !== null ? `${index + 1}. ` : '';
 
-    return `${numero}${urgencyIcon} *${cliente}*
-📊 *Potencia RX:* ${potenciaFormatted} (${urgencyLevel})
+    let message = `${numero}${urgencyIcon} *${cliente}*
+📊 *Potencia RX:* ${potenciaFormatted} (${urgencyLevel})`;
+
+    if (tiempoCritico) {
+        message += `\n⏱️ *Tiempo en estado crítico:* ${tiempoCritico}`;
+    }
+
+    message += `
 🔢 *Serie:* ${serie}
 📦 *Modelo:* ${modelo}
 🕐 *Último Reporte:* ${ultimoReporte}
 ━━━━━━━━━━━━━━━━━━━━`;
+
+    return message;
 }
 
 /**
@@ -165,7 +180,7 @@ export function formatOntNoReportMessage(ont, index = null) {
     const serie = ont.serialnumber || 'N/A';
     const modelo = ont.productclass || 'N/A';
     const ultimoReporte = ont.ont_lastinform_local || 'N/A';
-    
+
     // Calcular horas sin reporte
     let horasSinReporte = 'N/A';
     if (ont.ont_lastinform_local) {
@@ -201,10 +216,10 @@ export function formatOntStateChangeMessage(ont, previousState, index = null) {
     const cliente = ont.abonado || 'Sin asignar';
     const serie = ont.serialnumber || 'N/A';
     const modelo = ont.productclass || 'N/A';
-    
+
     const estadoAnterior = previousState?.RX_Estado || 'unknown';
     const estadoActual = ont.RX_Estado || 'unknown';
-    
+
     const estados = {
         'success': '✅ En línea',
         'danger': '🔴 Señal baja',
@@ -228,21 +243,38 @@ export function formatOntStateChangeMessage(ont, previousState, index = null) {
  * @returns {Promise<{ok: boolean, sent: number, errors: Array}>}
  */
 export async function sendMultipleOntAlerts(alerts) {
+    // Importar función de actualización del tracker
+    const { updateCriticalTimeTracker } = await import('../utils/ontCriticalTimeTracker');
+
     // Compatibilidad: si es un array, tratarlo como señal baja
     let ontsWithLowSignal = [];
     let ontsWithoutReport = [];
     let ontsWithStateChange = [];
     let previousStates = {};
+    let allOnts = [];
 
     if (Array.isArray(alerts)) {
         // Modo legacy: solo señal baja
         ontsWithLowSignal = alerts;
+        allOnts = alerts;
     } else {
         // Nuevo modo: objeto con diferentes tipos
         ontsWithLowSignal = alerts.lowSignal || [];
         ontsWithoutReport = alerts.withoutReport || [];
         ontsWithStateChange = alerts.stateChange || [];
         previousStates = alerts.previousStates || {};
+
+        // Combinar todas las ONTs para actualizar el tracker
+        allOnts = [
+            ...ontsWithLowSignal,
+            ...ontsWithoutReport,
+            ...ontsWithStateChange
+        ];
+    }
+
+    // Actualizar tracker de tiempo crítico antes de generar los mensajes
+    if (allOnts.length > 0) {
+        updateCriticalTimeTracker(allOnts);
     }
 
     const totalAlerts = ontsWithLowSignal.length + ontsWithoutReport.length + ontsWithStateChange.length;

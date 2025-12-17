@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { sendMultipleOntAlertsByEmail } from '../../../services/emailService';
+import { updateCriticalTimeTracker } from '../../../utils/ontCriticalTimeTracker';
 
 /**
  * Hook para manejar el envío de alertas de ONTs por Email
@@ -32,7 +33,7 @@ export function useEmailAlert(ontsList) {
 
         return ontsList.filter(ont => {
             if (!ont.ont_lastinform_local) return true;
-            
+
             try {
                 const lastReport = new Date(ont.ont_lastinform_local);
                 return lastReport < twelveHoursAgo;
@@ -57,10 +58,10 @@ export function useEmailAlert(ontsList) {
         ontsList.forEach(ont => {
             const previous = previousState[ont.id];
             if (!previous) return;
-            
+
             const currentEstado = ont.RX_Estado || 'unknown';
             const previousEstado = previous.RX_Estado || 'unknown';
-            
+
             if (currentEstado !== previousEstado) {
                 changedOnts.push(ont);
             }
@@ -96,6 +97,16 @@ export function useEmailAlert(ontsList) {
             const stateChangeData = getOntsWithStateChange();
             const ontsWithStateChange = stateChangeData.changedOnts || [];
             const previousStates = stateChangeData.previousStates || {};
+
+            // Actualizar tracker de tiempo crítico con todas las ONTs
+            const allOnts = [
+                ...ontsWithLowSignal,
+                ...ontsWithoutReport,
+                ...ontsWithStateChange
+            ];
+            if (allOnts.length > 0) {
+                updateCriticalTimeTracker(allOnts);
+            }
 
             // Combinar todas las alertas
             const allAlerts = {

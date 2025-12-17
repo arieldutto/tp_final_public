@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { sendMultipleOntAlerts } from '../services/telegramService';
+import { updateCriticalTimeTracker } from '../utils/ontCriticalTimeTracker';
 
 const TelegramAlertContext = createContext();
 
@@ -41,7 +42,7 @@ export function TelegramAlertProvider({ children }) {
 
         return ontsList.filter(ont => {
             if (!ont.ont_lastinform_local) return true;
-            
+
             try {
                 const lastReport = new Date(ont.ont_lastinform_local);
                 return lastReport < twelveHoursAgo;
@@ -64,10 +65,10 @@ export function TelegramAlertProvider({ children }) {
         const changedOnts = ontsList.filter(ont => {
             const previous = previousState[ont.id];
             if (!previous) return false;
-            
+
             const currentEstado = ont.RX_Estado || 'unknown';
             const previousEstado = previous.RX_Estado || 'unknown';
-            
+
             return currentEstado !== previousEstado;
         });
 
@@ -100,7 +101,13 @@ export function TelegramAlertProvider({ children }) {
      * Función para actualizar la lista de ONTs desde cualquier componente
      */
     const updateOntsList = useCallback((newOntsList) => {
-        setOntsList(newOntsList || []);
+        const updatedList = newOntsList || [];
+        setOntsList(updatedList);
+
+        // Actualizar tracker de tiempo crítico cuando se actualiza la lista
+        if (updatedList.length > 0) {
+            updateCriticalTimeTracker(updatedList);
+        }
     }, []);
 
     /**
@@ -112,6 +119,16 @@ export function TelegramAlertProvider({ children }) {
         const stateChangeData = getOntsWithStateChange();
         const ontsWithStateChange = stateChangeData.changedOnts || [];
         const previousStates = stateChangeData.previousStates || {};
+
+        // Actualizar tracker de tiempo crítico con todas las ONTs
+        const allOnts = [
+            ...ontsWithLowSignal,
+            ...ontsWithoutReport,
+            ...ontsWithStateChange
+        ];
+        if (allOnts.length > 0) {
+            updateCriticalTimeTracker(allOnts);
+        }
 
         const allAlerts = {
             lowSignal: ontsWithLowSignal,
@@ -181,7 +198,13 @@ export function TelegramAlertProvider({ children }) {
             const json = await response.json();
 
             if (json.data && Array.isArray(json.data)) {
-                setOntsList(json.data);
+                const newOntsList = json.data || [];
+                setOntsList(newOntsList);
+
+                // Actualizar tracker de tiempo crítico cuando se cargan las ONTs
+                if (newOntsList.length > 0) {
+                    updateCriticalTimeTracker(newOntsList);
+                }
             }
         } catch (error) {
             console.error('Error obteniendo datos de ONTs:', error);
