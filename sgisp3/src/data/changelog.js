@@ -3,9 +3,9 @@
 
 export const CHANGELOG = [
     {
-        version: "3.5.0",
+        version: "3.4.1",
         date: "2025-12-16",
-        type: "minor", // minor: nuevas funcionalidades
+        type: "patch", // patch: mejoras y correcciones
         changes: [
             {
                 type: "feature",

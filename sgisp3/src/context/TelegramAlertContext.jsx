@@ -234,11 +234,11 @@ export function TelegramAlertProvider({ children }) {
             sendAutoAlerts();
         }, 5000); // Esperar 5 segundos para que se carguen los datos
 
-        // Configurar intervalo para obtener datos cada 5 minutos
-        // Esto asegura que siempre tengamos datos actualizados
+        // Configurar intervalo para obtener datos cada 1 hora
+        // Esto asegura que siempre tengamos datos actualizados sin sobrecargar el ACS
         fetchIntervalRef.current = setInterval(() => {
             fetchOntsData();
-        }, 5 * 60 * 1000); // 5 minutos
+        }, 60 * 60 * 1000); // 1 hora
 
         // Configurar intervalo para envío automático cada 1 hora
         const intervalMs = 60 * 60 * 1000; // 1 hora
