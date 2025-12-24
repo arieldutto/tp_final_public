@@ -30,11 +30,26 @@ function OltListPage() {
                         }
                     } else {
                         const data = await response.json();
-                        if (data.success || data.data) {
-                            setOlts(Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []));
-                        } else {
-                            setOlts([]);
+                        console.log('📊 Respuesta completa de /olts:', data);
+
+                        // Intentar diferentes formas de obtener los datos
+                        let oltsArray = [];
+                        if (data.success && data.data && Array.isArray(data.data)) {
+                            oltsArray = data.data;
+                        } else if (Array.isArray(data.data)) {
+                            oltsArray = data.data;
+                        } else if (Array.isArray(data)) {
+                            oltsArray = data;
                         }
+
+                        console.log('📋 OLTs parseadas:', oltsArray);
+                        console.log('📋 Total de OLTs:', oltsArray.length);
+
+                        if (oltsArray.length > 0) {
+                            console.log('📋 Primera OLT:', oltsArray[0]);
+                        }
+
+                        setOlts(oltsArray);
                     }
                 } catch (networkError) {
                     // Error de red (CORS, conexión, etc.)
@@ -89,16 +104,39 @@ function OltListPage() {
                     </small>
                 </div>
             ) : (
+                <>
+                    {/* Debug temporal - mostrar datos crudos */}
+                    {process.env.NODE_ENV === 'development' && olts.length > 0 && (
+                        <div className="alert alert-warning mb-3">
+                            <details>
+                                <summary>🔍 Debug: Datos recibidos (click para expandir)</summary>
+                                <pre className="mt-2 mb-0" style={{ fontSize: '0.8rem', maxHeight: '200px', overflow: 'auto' }}>
+                                    {JSON.stringify(olts, null, 2)}
+                                </pre>
+                            </details>
+                        </div>
+                    )}
+                </>
+            )}
+
+            {olts.length > 0 && (
                 <div className="row">
                     {olts.map((olt) => (
                         <div key={olt.id} className="col-md-6 col-lg-4 mb-4">
                             <div className={`card glass-card ${olt.is_active ? 'border-success' : 'border-secondary'}`}>
                                 <div className="card-body">
+                                    {/* Debug temporal para esta OLT */}
+                                    {process.env.NODE_ENV === 'development' && (
+                                        <small className="text-muted d-block mb-2">
+                                            ID: {olt.id} | Keys: {Object.keys(olt).join(', ')}
+                                        </small>
+                                    )}
+
                                     {/* Header con nombre y badges */}
                                     <div className="d-flex justify-content-between align-items-start mb-3">
                                         <h5 className="card-title mb-0">
                                             <i className="bi bi-router me-2"></i>
-                                            {olt.olt_name || `OLT ${olt.id}`}
+                                            {olt.olt_name || olt.nombre || `OLT ${olt.id}`}
                                         </h5>
                                         <div className="d-flex flex-column gap-1">
                                             {olt.is_default && (
@@ -128,47 +166,49 @@ function OltListPage() {
                                     </div>
 
                                     {/* Descripción */}
-                                    {olt.description && (
+                                    {(olt.description || olt.descripcion) && (
                                         <p className="card-text mb-3 text-muted small">
                                             <i className="bi bi-info-circle me-1"></i>
-                                            {olt.description}
+                                            {olt.description || olt.descripcion}
                                         </p>
                                     )}
 
                                     <div className="olt-info-details">
                                         {/* Información de conexión */}
-                                        <div className="mb-3">
-                                            <h6 className="text-light border-bottom border-secondary pb-1 mb-2">
-                                                <i className="bi bi-wifi me-2"></i>
-                                                Conexión
-                                            </h6>
-                                            {olt.olt_host && (
-                                                <p className="card-text mb-2">
-                                                    <i className="bi bi-globe me-1 text-primary"></i>
-                                                    <strong>IP/Host:</strong> <code className="text-light">{olt.olt_host}</code>
-                                                </p>
-                                            )}
-                                            {olt.olt_user && (
-                                                <p className="card-text mb-2">
-                                                    <i className="bi bi-person me-1 text-info"></i>
-                                                    <strong>Usuario:</strong> <span className="text-light">{olt.olt_user}</span>
-                                                </p>
-                                            )}
-                                            {olt.vendor && (
-                                                <p className="card-text mb-2">
-                                                    <i className="bi bi-tag me-1 text-success"></i>
-                                                    <strong>Fabricante:</strong>
-                                                    <span className="badge bg-primary ms-2">{olt.vendor}</span>
-                                                </p>
-                                            )}
-                                            {olt.model && (
-                                                <p className="card-text mb-2">
-                                                    <i className="bi bi-cpu me-1 text-warning"></i>
-                                                    <strong>Modelo:</strong>
-                                                    <span className="badge bg-info ms-2">{olt.model}</span>
-                                                </p>
-                                            )}
-                                        </div>
+                                        {(olt.olt_host || olt.ip || olt.olt_user || olt.usuario || olt.vendor || olt.model || olt.modelo) && (
+                                            <div className="mb-3">
+                                                <h6 className="text-light border-bottom border-secondary pb-1 mb-2">
+                                                    <i className="bi bi-wifi me-2"></i>
+                                                    Conexión
+                                                </h6>
+                                                {(olt.olt_host || olt.ip) && (
+                                                    <p className="card-text mb-2">
+                                                        <i className="bi bi-globe me-1 text-primary"></i>
+                                                        <strong>IP/Host:</strong> <code className="text-light">{olt.olt_host || olt.ip}</code>
+                                                    </p>
+                                                )}
+                                                {(olt.olt_user || olt.usuario) && (
+                                                    <p className="card-text mb-2">
+                                                        <i className="bi bi-person me-1 text-info"></i>
+                                                        <strong>Usuario:</strong> <span className="text-light">{olt.olt_user || olt.usuario}</span>
+                                                    </p>
+                                                )}
+                                                {olt.vendor && (
+                                                    <p className="card-text mb-2">
+                                                        <i className="bi bi-tag me-1 text-success"></i>
+                                                        <strong>Fabricante:</strong>
+                                                        <span className="badge bg-primary ms-2">{olt.vendor}</span>
+                                                    </p>
+                                                )}
+                                                {(olt.model || olt.modelo) && (
+                                                    <p className="card-text mb-2">
+                                                        <i className="bi bi-cpu me-1 text-warning"></i>
+                                                        <strong>Modelo:</strong>
+                                                        <span className="badge bg-info ms-2">{olt.model || olt.modelo}</span>
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
 
                                         {/* Configuración de Red */}
                                         <div className="mb-3">
