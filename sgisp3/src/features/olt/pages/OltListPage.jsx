@@ -12,20 +12,38 @@ function OltListPage() {
             try {
                 setLoading(true);
                 setError(null);
-                
-                // TODO: Reemplazar con el endpoint real de OLTs cuando esté disponible
-                // Por ahora, asumimos que existe /api/olts o similar
-                const response = await fetch(`${API_SGISP}/olts`);
-                const data = await response.json();
-                
-                if (data.success || data.data) {
-                    setOlts(Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []));
-                } else {
-                    setError(data.error || 'Error al cargar OLTs');
+
+                try {
+                    const response = await fetch(`${API_SGISP}/olts`);
+
+                    // Si el endpoint no existe (404) o hay error del servidor, simplemente no hay OLTs
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            // Endpoint no existe aún, no es un error
+                            console.info('Endpoint /olts no disponible aún. El sistema funcionará sin selección de OLT.');
+                            setOlts([]);
+                        } else {
+                            // Otro error del servidor
+                            const errorData = await response.json().catch(() => ({}));
+                            console.warn('Error al cargar OLTs:', errorData.error || `HTTP ${response.status}`);
+                            setOlts([]);
+                        }
+                    } else {
+                        const data = await response.json();
+                        if (data.success || data.data) {
+                            setOlts(Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []));
+                        } else {
+                            setOlts([]);
+                        }
+                    }
+                } catch (networkError) {
+                    // Error de red (CORS, conexión, etc.)
+                    console.warn('No se pudo conectar al endpoint /olts (puede que no exista aún):', networkError.message);
+                    setOlts([]);
                 }
             } catch (err) {
-                console.error('Error al cargar OLTs:', err);
-                setError('Error de conexión al cargar OLTs');
+                console.error('Error inesperado al cargar OLTs:', err);
+                setOlts([]);
             } finally {
                 setLoading(false);
             }
@@ -47,15 +65,6 @@ function OltListPage() {
         );
     }
 
-    if (error) {
-        return (
-            <div className="alert alert-danger">
-                <i className="bi bi-exclamation-triangle-fill me-2"></i>
-                {error}
-            </div>
-        );
-    }
-
     return (
         <div className="olt-list-container">
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -69,6 +78,10 @@ function OltListPage() {
                 <div className="alert alert-info">
                     <i className="bi bi-info-circle me-2"></i>
                     No hay OLTs configuradas en el sistema.
+                    <br />
+                    <small className="text-muted">
+                        Si el endpoint /olts no está disponible aún, el sistema funcionará sin selección de OLT (modo de compatibilidad).
+                    </small>
                 </div>
             ) : (
                 <div className="row">
@@ -87,8 +100,8 @@ function OltListPage() {
                                         <p className="card-text">{olt.descripcion}</p>
                                     )}
                                     <div className="mt-3">
-                                        <a 
-                                            href={`/olt/${olt.id}/perfiles`} 
+                                        <a
+                                            href={`/olt/${olt.id}/perfiles`}
                                             className="btn btn-primary btn-sm me-2"
                                         >
                                             <i className="bi bi-gear me-1"></i>

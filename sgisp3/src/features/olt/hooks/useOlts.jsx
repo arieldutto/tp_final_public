@@ -14,11 +14,12 @@ export function useOlts() {
             try {
                 setLoading(true);
                 setError(null);
-                
+
                 // Intentar obtener OLTs desde la API
                 // Si el endpoint no existe, retornar array vacío (compatibilidad hacia atrás)
                 try {
                     const response = await fetch(`${API_SGISP}/olts`);
+
                     if (response.ok) {
                         const data = await response.json();
                         if (data.success || data.data) {
@@ -26,18 +27,24 @@ export function useOlts() {
                         } else {
                             setOlts([]);
                         }
+                    } else if (response.status === 404) {
+                        // Endpoint no existe aún, no es un error - modo compatibilidad
+                        console.info('Endpoint /olts no disponible. Sistema funcionará sin selección de OLT.');
+                        setOlts([]);
                     } else {
-                        // Si el endpoint no existe (404), simplemente no hay OLTs configuradas
+                        // Otro error HTTP, pero no lo tratamos como error crítico
+                        const errorData = await response.json().catch(() => ({}));
+                        console.warn('Error HTTP al cargar OLTs:', errorData.error || `HTTP ${response.status}`);
                         setOlts([]);
                     }
-                } catch (err) {
-                    // Si hay error de red o el endpoint no existe, asumir que no hay OLTs
-                    console.warn('No se pudo cargar OLTs (puede que el endpoint no exista aún):', err);
+                } catch (networkError) {
+                    // Error de red (CORS, conexión, etc.) - no es un error crítico
+                    console.warn('No se pudo conectar al endpoint /olts (puede que no exista aún):', networkError.message);
                     setOlts([]);
                 }
             } catch (err) {
-                console.error('Error al cargar OLTs:', err);
-                setError(err.message);
+                // Error inesperado, pero no lo mostramos como error crítico
+                console.warn('Error inesperado al cargar OLTs:', err);
                 setOlts([]);
             } finally {
                 setLoading(false);
