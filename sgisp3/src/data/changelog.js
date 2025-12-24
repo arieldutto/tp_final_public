@@ -3,6 +3,25 @@
 
 export const CHANGELOG = [
     {
+        version: "3.4.2",
+        date: "2025-12-16",
+        type: "patch", // patch: mejoras y correcciones
+        changes: [
+            {
+                type: "improvement",
+                icon: "bi-clock-history",
+                title: "Optimización de Frecuencia de Envío Automático",
+                description: "Intervalo de envío automático de alertas por Telegram ajustado de 1 hora a 6 horas (4 envíos por día) para reducir la carga del sistema y optimizar las notificaciones"
+            },
+            {
+                type: "improvement",
+                icon: "bi-database",
+                title: "Optimización de Consultas al ACS",
+                description: "Frecuencia de actualización de datos desde el ACS reducida de 5 minutos a 1 hora para disminuir la carga en el servidor sin afectar la funcionalidad del sistema"
+            }
+        ]
+    },
+    {
         version: "3.4.1",
         date: "2025-12-16",
         type: "patch", // patch: mejoras y correcciones

@@ -240,8 +240,8 @@ export function TelegramAlertProvider({ children }) {
             fetchOntsData();
         }, 60 * 60 * 1000); // 1 hora
 
-        // Configurar intervalo para envío automático cada 1 hora
-        const intervalMs = 60 * 60 * 1000; // 1 hora
+        // Configurar intervalo para envío automático cada 6 horas (4 envíos por día)
+        const intervalMs = 6 * 60 * 60 * 1000; // 6 horas
         intervalRef.current = setInterval(() => {
             sendAutoAlerts();
         }, intervalMs);

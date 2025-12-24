@@ -153,7 +153,7 @@ function TelegramAlertButton({ ontsList }) {
                 {isAutoSendEnabled && (
                     <span className="badge bg-info text-dark">
                         <i className="bi bi-clock me-1"></i>
-                        Cada 1 hora
+                        Cada 6 horas
                     </span>
                 )}
             </div>
@@ -263,8 +263,8 @@ function TelegramAlertButton({ ontsList }) {
             {isAutoSendEnabled && (
                 <div className="alert alert-success mt-2" role="alert">
                     <i className="bi bi-check-circle-fill me-2"></i>
-                    <strong>Envió automático activo:</strong> El sistema enviará alertas cada 1 hora automáticamente,
-                    incluso si sales de esta página. Los datos se actualizan cada 5 minutos.
+                    <strong>Envió automático activo:</strong> El sistema enviará alertas cada 6 horas automáticamente (4 envíos por día),
+                    incluso si sales de esta página. Los datos se actualizan cada 1 hora.
                     {lastAutoSend && ` Último envío: ${formatLastAutoSend()}`}
                 </div>
             )}
