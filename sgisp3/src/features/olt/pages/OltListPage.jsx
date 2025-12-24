@@ -125,38 +125,43 @@ function OltListPage() {
                         <div key={olt.id} className="col-md-6 col-lg-4 mb-4">
                             <div className={`card glass-card ${olt.is_active ? 'border-success' : 'border-secondary'}`}>
                                 <div className="card-body">
-                                    {/* Debug temporal para esta OLT */}
-                                    {process.env.NODE_ENV === 'development' && (
-                                        <small className="text-muted d-block mb-2">
-                                            ID: {olt.id} | Keys: {Object.keys(olt).join(', ')}
-                                        </small>
-                                    )}
+                                    {/* Debug temporal para esta OLT - SIEMPRE mostrar */}
+                                    <details className="mb-2">
+                                        <summary className="text-muted small" style={{ cursor: 'pointer', fontSize: '0.75rem' }}>
+                                            🔍 Ver todos los datos (ID: {olt.id})
+                                        </summary>
+                                        <pre className="mt-2 mb-0 small" style={{ fontSize: '0.7rem', maxHeight: '150px', overflow: 'auto', backgroundColor: 'rgba(0,0,0,0.3)', padding: '8px', borderRadius: '4px' }}>
+                                            {JSON.stringify(olt, null, 2)}
+                                        </pre>
+                                    </details>
 
                                     {/* Header con nombre y badges */}
                                     <div className="d-flex justify-content-between align-items-start mb-3">
                                         <h5 className="card-title mb-0">
                                             <i className="bi bi-router me-2"></i>
-                                            {olt.olt_name || olt.nombre || `OLT ${olt.id}`}
+                                            {olt.olt_name || olt.nombre || olt.name || `OLT ${olt.id}`}
                                         </h5>
                                         <div className="d-flex flex-column gap-1">
-                                            {olt.is_default && (
+                                            {(olt.is_default !== undefined && olt.is_default) && (
                                                 <span className="badge bg-warning text-dark">
                                                     <i className="bi bi-star-fill me-1"></i>
                                                     Por Defecto
                                                 </span>
                                             )}
-                                            {olt.is_active ? (
-                                                <span className="badge bg-success">
-                                                    <i className="bi bi-check-circle me-1"></i>
-                                                    Activa
-                                                </span>
-                                            ) : (
-                                                <span className="badge bg-secondary">
-                                                    <i className="bi bi-x-circle me-1"></i>
-                                                    Inactiva
-                                                </span>
+                                            {(olt.is_active !== undefined) && (
+                                                olt.is_active ? (
+                                                    <span className="badge bg-success">
+                                                        <i className="bi bi-check-circle me-1"></i>
+                                                        Activa
+                                                    </span>
+                                                ) : (
+                                                    <span className="badge bg-secondary">
+                                                        <i className="bi bi-x-circle me-1"></i>
+                                                        Inactiva
+                                                    </span>
+                                                )
                                             )}
-                                            {olt.is_configured && (
+                                            {(olt.is_configured !== undefined && olt.is_configured) && (
                                                 <span className="badge bg-info">
                                                     <i className="bi bi-gear-fill me-1"></i>
                                                     Configurada
@@ -166,49 +171,97 @@ function OltListPage() {
                                     </div>
 
                                     {/* Descripción */}
-                                    {(olt.description || olt.descripcion) && (
+                                    {(olt.description || olt.descripcion || olt.desc) && (
                                         <p className="card-text mb-3 text-muted small">
                                             <i className="bi bi-info-circle me-1"></i>
-                                            {olt.description || olt.descripcion}
+                                            {olt.description || olt.descripcion || olt.desc}
                                         </p>
                                     )}
 
                                     <div className="olt-info-details">
-                                        {/* Información de conexión */}
-                                        {(olt.olt_host || olt.ip || olt.olt_user || olt.usuario || olt.vendor || olt.model || olt.modelo) && (
-                                            <div className="mb-3">
-                                                <h6 className="text-light border-bottom border-secondary pb-1 mb-2">
-                                                    <i className="bi bi-wifi me-2"></i>
-                                                    Conexión
-                                                </h6>
-                                                {(olt.olt_host || olt.ip) && (
-                                                    <p className="card-text mb-2">
-                                                        <i className="bi bi-globe me-1 text-primary"></i>
-                                                        <strong>IP/Host:</strong> <code className="text-light">{olt.olt_host || olt.ip}</code>
-                                                    </p>
-                                                )}
-                                                {(olt.olt_user || olt.usuario) && (
-                                                    <p className="card-text mb-2">
-                                                        <i className="bi bi-person me-1 text-info"></i>
-                                                        <strong>Usuario:</strong> <span className="text-light">{olt.olt_user || olt.usuario}</span>
-                                                    </p>
-                                                )}
-                                                {olt.vendor && (
-                                                    <p className="card-text mb-2">
-                                                        <i className="bi bi-tag me-1 text-success"></i>
-                                                        <strong>Fabricante:</strong>
-                                                        <span className="badge bg-primary ms-2">{olt.vendor}</span>
-                                                    </p>
-                                                )}
-                                                {(olt.model || olt.modelo) && (
-                                                    <p className="card-text mb-2">
-                                                        <i className="bi bi-cpu me-1 text-warning"></i>
-                                                        <strong>Modelo:</strong>
-                                                        <span className="badge bg-info ms-2">{olt.model || olt.modelo}</span>
-                                                    </p>
-                                                )}
-                                            </div>
-                                        )}
+                                        {/* Información de conexión - SIEMPRE mostrar esta sección con los datos disponibles */}
+                                        <div className="mb-3">
+                                            <h6 className="text-light border-bottom border-secondary pb-1 mb-2">
+                                                <i className="bi bi-wifi me-2"></i>
+                                                Información
+                                            </h6>
+
+                                            {/* IP/Host - mostrar siempre si existe */}
+                                            {(olt.olt_host || olt.ip || olt.host) && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-globe me-1 text-primary"></i>
+                                                    <strong>IP/Host:</strong> <code className="text-light">{olt.olt_host || olt.ip || olt.host}</code>
+                                                </p>
+                                            )}
+
+                                            {/* Usuario - mostrar siempre si existe */}
+                                            {(olt.olt_user || olt.usuario || olt.user || olt.username) && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-person me-1 text-info"></i>
+                                                    <strong>Usuario:</strong> <span className="text-light">{olt.olt_user || olt.usuario || olt.user || olt.username}</span>
+                                                </p>
+                                            )}
+
+                                            {/* Mostrar todos los campos disponibles si no hay datos estándar */}
+                                            {!olt.olt_host && !olt.ip && !olt.host && !olt.olt_user && !olt.usuario && !olt.user && !olt.username && (
+                                                <div className="text-muted small">
+                                                    <p className="mb-1">Campos disponibles:</p>
+                                                    <ul className="mb-0" style={{ fontSize: '0.85rem', maxHeight: '150px', overflow: 'auto' }}>
+                                                        {Object.keys(olt).filter(key =>
+                                                            key !== 'id' &&
+                                                            key !== 'profiles' &&
+                                                            key !== 'traffic_profiles' &&
+                                                            key !== 'params' &&
+                                                            olt[key] !== null &&
+                                                            olt[key] !== undefined
+                                                        ).map(key => (
+                                                            <li key={key}>
+                                                                <strong>{key}:</strong> {String(olt[key]).substring(0, 100)}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            {/* Fabricante */}
+                                            {olt.vendor && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-tag me-1 text-success"></i>
+                                                    <strong>Fabricante:</strong>
+                                                    <span className="badge bg-primary ms-2">{olt.vendor}</span>
+                                                </p>
+                                            )}
+
+                                            {/* Modelo */}
+                                            {(olt.model || olt.modelo) && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-cpu me-1 text-warning"></i>
+                                                    <strong>Modelo:</strong>
+                                                    <span className="badge bg-info ms-2">{olt.model || olt.modelo}</span>
+                                                </p>
+                                            )}
+
+                                            {/* Mostrar TODOS los campos disponibles si no hay datos estándar */}
+                                            {!olt.olt_host && !olt.ip && !olt.host && !olt.olt_user && !olt.usuario && !olt.user && !olt.username && (
+                                                <div className="text-muted small">
+                                                    <p className="mb-1"><strong>Campos disponibles:</strong></p>
+                                                    <ul className="mb-0" style={{ fontSize: '0.85rem', maxHeight: '150px', overflow: 'auto' }}>
+                                                        {Object.keys(olt).filter(key =>
+                                                            key !== 'id' &&
+                                                            key !== 'profiles' &&
+                                                            key !== 'traffic_profiles' &&
+                                                            key !== 'params' &&
+                                                            olt[key] !== null &&
+                                                            olt[key] !== undefined
+                                                        ).map(key => (
+                                                            <li key={key} className="mb-1">
+                                                                <strong>{key}:</strong> {String(olt[key]).substring(0, 100)}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </div>
 
                                         {/* Configuración de Red */}
                                         <div className="mb-3">
