@@ -92,71 +92,209 @@ function OltListPage() {
                 <div className="row">
                     {olts.map((olt) => (
                         <div key={olt.id} className="col-md-6 col-lg-4 mb-4">
-                            <div className="card glass-card">
+                            <div className={`card glass-card ${olt.is_active ? 'border-success' : 'border-secondary'}`}>
                                 <div className="card-body">
-                                    <h5 className="card-title">
-                                        <i className="bi bi-router me-2"></i>
-                                        {olt.nombre || `OLT ${olt.id}`}
-                                    </h5>
+                                    {/* Header con nombre y badges */}
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 className="card-title mb-0">
+                                            <i className="bi bi-router me-2"></i>
+                                            {olt.olt_name || `OLT ${olt.id}`}
+                                        </h5>
+                                        <div className="d-flex flex-column gap-1">
+                                            {olt.is_default && (
+                                                <span className="badge bg-warning text-dark">
+                                                    <i className="bi bi-star-fill me-1"></i>
+                                                    Por Defecto
+                                                </span>
+                                            )}
+                                            {olt.is_active ? (
+                                                <span className="badge bg-success">
+                                                    <i className="bi bi-check-circle me-1"></i>
+                                                    Activa
+                                                </span>
+                                            ) : (
+                                                <span className="badge bg-secondary">
+                                                    <i className="bi bi-x-circle me-1"></i>
+                                                    Inactiva
+                                                </span>
+                                            )}
+                                            {olt.is_configured && (
+                                                <span className="badge bg-info">
+                                                    <i className="bi bi-gear-fill me-1"></i>
+                                                    Configurada
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Descripción */}
+                                    {olt.description && (
+                                        <p className="card-text mb-3 text-muted small">
+                                            <i className="bi bi-info-circle me-1"></i>
+                                            {olt.description}
+                                        </p>
+                                    )}
 
                                     <div className="olt-info-details">
-                                        <p className="card-text mb-2">
-                                            <small className="text-muted">ID: {olt.id}</small>
-                                        </p>
+                                        {/* Información de conexión */}
+                                        <div className="mb-3">
+                                            <h6 className="text-light border-bottom border-secondary pb-1 mb-2">
+                                                <i className="bi bi-wifi me-2"></i>
+                                                Conexión
+                                            </h6>
+                                            {olt.olt_host && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-globe me-1 text-primary"></i>
+                                                    <strong>IP/Host:</strong> <code className="text-light">{olt.olt_host}</code>
+                                                </p>
+                                            )}
+                                            {olt.olt_user && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-person me-1 text-info"></i>
+                                                    <strong>Usuario:</strong> <span className="text-light">{olt.olt_user}</span>
+                                                </p>
+                                            )}
+                                            {olt.vendor && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-tag me-1 text-success"></i>
+                                                    <strong>Fabricante:</strong>
+                                                    <span className="badge bg-primary ms-2">{olt.vendor}</span>
+                                                </p>
+                                            )}
+                                            {olt.model && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-cpu me-1 text-warning"></i>
+                                                    <strong>Modelo:</strong>
+                                                    <span className="badge bg-info ms-2">{olt.model}</span>
+                                                </p>
+                                            )}
+                                        </div>
 
-                                        {olt.descripcion && (
-                                            <p className="card-text mb-2">
-                                                <i className="bi bi-info-circle me-1 text-muted"></i>
-                                                {olt.descripcion}
-                                            </p>
+                                        {/* Configuración de Red */}
+                                        <div className="mb-3">
+                                            <h6 className="text-light border-bottom border-secondary pb-1 mb-2">
+                                                <i className="bi bi-diagram-3 me-2"></i>
+                                                Red
+                                            </h6>
+                                            {olt.vlan_management !== undefined && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-hdd-network me-1 text-primary"></i>
+                                                    <strong>VLAN Management:</strong>
+                                                    <span className="badge bg-secondary ms-2">{olt.vlan_management}</span>
+                                                </p>
+                                            )}
+                                            {olt.vlan_internet_list && olt.vlan_internet_list.length > 0 && (
+                                                <p className="card-text mb-2">
+                                                    <i className="bi bi-router me-1 text-success"></i>
+                                                    <strong>VLANs Internet:</strong>
+                                                    <span className="text-light ms-2">
+                                                        {olt.vlan_internet_list.join(', ')}
+                                                        {olt.vlan_internet_count && (
+                                                            <span className="badge bg-info ms-2">{olt.vlan_internet_count}</span>
+                                                        )}
+                                                    </span>
+                                                </p>
+                                            )}
+                                            {(olt.gemport_management !== undefined || olt.gemport_internet !== undefined) && (
+                                                <div className="ms-4 mt-2">
+                                                    {olt.gemport_management !== undefined && (
+                                                        <small className="text-muted d-block">
+                                                            <i className="bi bi-circle me-1"></i>
+                                                            Gemport Management: <code>{olt.gemport_management}</code>
+                                                        </small>
+                                                    )}
+                                                    {olt.gemport_internet !== undefined && (
+                                                        <small className="text-muted d-block">
+                                                            <i className="bi bi-circle me-1"></i>
+                                                            Gemport Internet: <code>{olt.gemport_internet}</code>
+                                                        </small>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Perfiles ONT */}
+                                        {olt.profiles && (
+                                            <div className="mb-3">
+                                                <h6 className="text-light border-bottom border-secondary pb-1 mb-2">
+                                                    <i className="bi bi-list-ul me-2"></i>
+                                                    Perfiles ONT
+                                                </h6>
+                                                {olt.profiles.lineprofiles && (
+                                                    <p className="card-text mb-2">
+                                                        <i className="bi bi-list-check me-1 text-primary"></i>
+                                                        <strong>Lineprofiles:</strong>
+                                                        <span className="text-light ms-2">
+                                                            {olt.profiles.lineprofiles.total} total
+                                                            {olt.profiles.lineprofiles.global > 0 && (
+                                                                <span className="badge bg-success ms-2">{olt.profiles.lineprofiles.global} global</span>
+                                                            )}
+                                                            {olt.profiles.lineprofiles.specific > 0 && (
+                                                                <span className="badge bg-info ms-2">{olt.profiles.lineprofiles.specific} específicos</span>
+                                                            )}
+                                                        </span>
+                                                    </p>
+                                                )}
+                                                {olt.profiles.srvprofiles && (
+                                                    <p className="card-text mb-2">
+                                                        <i className="bi bi-list-check me-1 text-success"></i>
+                                                        <strong>Srvprofiles:</strong>
+                                                        <span className="text-light ms-2">
+                                                            {olt.profiles.srvprofiles.total} total
+                                                            {olt.profiles.srvprofiles.global > 0 && (
+                                                                <span className="badge bg-success ms-2">{olt.profiles.srvprofiles.global} global</span>
+                                                            )}
+                                                            {olt.profiles.srvprofiles.specific > 0 && (
+                                                                <span className="badge bg-info ms-2">{olt.profiles.srvprofiles.specific} específicos</span>
+                                                            )}
+                                                        </span>
+                                                    </p>
+                                                )}
+                                            </div>
                                         )}
 
-                                        {olt.ip && (
-                                            <p className="card-text mb-2">
-                                                <i className="bi bi-globe me-1 text-primary"></i>
-                                                <strong>IP:</strong> <code className="text-light">{olt.ip}</code>
-                                            </p>
-                                        )}
-
-                                        {olt.usuario && (
-                                            <p className="card-text mb-2">
-                                                <i className="bi bi-person me-1 text-info"></i>
-                                                <strong>Usuario:</strong> <span className="text-light">{olt.usuario}</span>
-                                            </p>
-                                        )}
-
-                                        {olt.contraseña !== undefined && (
-                                            <p className="card-text mb-2">
-                                                <i className="bi bi-key me-1 text-warning"></i>
-                                                <strong>Contraseña:</strong>
-                                                <span className="text-light ms-1">
-                                                    {olt.contraseña ? '••••••••' : 'No configurada'}
-                                                </span>
-                                            </p>
-                                        )}
-
-                                        {olt.puerto && (
-                                            <p className="card-text mb-2">
-                                                <i className="bi bi-ethernet me-1 text-success"></i>
-                                                <strong>Puerto:</strong> <span className="text-light">{olt.puerto}</span>
-                                            </p>
-                                        )}
-
-                                        {olt.modelo && (
-                                            <p className="card-text mb-2">
-                                                <i className="bi bi-cpu me-1 text-secondary"></i>
-                                                <strong>Modelo:</strong> <span className="text-light">{olt.modelo}</span>
-                                            </p>
-                                        )}
-
-                                        {olt.ubicacion && (
-                                            <p className="card-text mb-2">
-                                                <i className="bi bi-geo-alt me-1 text-danger"></i>
-                                                <strong>Ubicación:</strong> <span className="text-light">{olt.ubicacion}</span>
-                                            </p>
+                                        {/* Perfiles de Tráfico */}
+                                        {olt.traffic_profiles && (
+                                            <div className="mb-3">
+                                                <h6 className="text-light border-bottom border-secondary pb-1 mb-2">
+                                                    <i className="bi bi-speedometer2 me-2"></i>
+                                                    Perfiles de Tráfico
+                                                </h6>
+                                                {olt.traffic_profiles.tables && (
+                                                    <p className="card-text mb-2">
+                                                        <i className="bi bi-table me-1 text-warning"></i>
+                                                        <strong>Tablas:</strong>
+                                                        <span className="text-light ms-2">
+                                                            {olt.traffic_profiles.tables.total} total
+                                                            {olt.traffic_profiles.tables.global > 0 && (
+                                                                <span className="badge bg-success ms-2">{olt.traffic_profiles.tables.global} global</span>
+                                                            )}
+                                                            {olt.traffic_profiles.tables.specific > 0 && (
+                                                                <span className="badge bg-info ms-2">{olt.traffic_profiles.tables.specific} específicas</span>
+                                                            )}
+                                                        </span>
+                                                    </p>
+                                                )}
+                                                {olt.traffic_profiles.mappings && (
+                                                    <p className="card-text mb-2">
+                                                        <i className="bi bi-arrow-left-right me-1 text-info"></i>
+                                                        <strong>Mapeos:</strong>
+                                                        <span className="text-light ms-2">
+                                                            {olt.traffic_profiles.mappings.total} total
+                                                            {olt.traffic_profiles.mappings.global > 0 && (
+                                                                <span className="badge bg-success ms-2">{olt.traffic_profiles.mappings.global} global</span>
+                                                            )}
+                                                            {olt.traffic_profiles.mappings.specific > 0 && (
+                                                                <span className="badge bg-info ms-2">{olt.traffic_profiles.mappings.specific} específicos</span>
+                                                            )}
+                                                        </span>
+                                                    </p>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
 
+                                    {/* Acciones */}
                                     <div className="mt-3 pt-3 border-top border-secondary">
                                         <a
                                             href={`/olt/${olt.id}/perfiles`}
@@ -165,6 +303,18 @@ function OltListPage() {
                                             <i className="bi bi-gear me-1"></i>
                                             Ver Perfiles
                                         </a>
+                                        {olt.created_on && (
+                                            <small className="text-muted d-block mt-2">
+                                                <i className="bi bi-calendar me-1"></i>
+                                                Creada: {new Date(olt.created_on).toLocaleDateString('es-AR')}
+                                                {olt.modified_on && (
+                                                    <span className="ms-3">
+                                                        <i className="bi bi-pencil me-1"></i>
+                                                        Modificada: {new Date(olt.modified_on).toLocaleDateString('es-AR')}
+                                                    </span>
+                                                )}
+                                            </small>
+                                        )}
                                     </div>
                                 </div>
                             </div>
