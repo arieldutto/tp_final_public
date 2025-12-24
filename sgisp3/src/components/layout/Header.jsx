@@ -52,8 +52,7 @@ function Header() {
                                 <DropdownMenu
                                     title="OLT"
                                     items={[
-                                        { label: "OLT", href: "/construccion" },
-                                        { label: "Configuraciones", href: "/construccion" },
+                                        { label: "Listado de OLTs", href: "/olt" },
                                         { label: "Tablas de trafico", href: "/construccion" }
                                     ]}
                                 />

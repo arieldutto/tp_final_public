@@ -17,6 +17,8 @@ import Error404 from "./pages/errors/Error404";
 import Error500 from "./pages/errors/Error500";
 import ErrorGeneric from "./pages/errors/ErrorGeneric";
 import UnderConstruction from "./pages/UnderConstruction";
+import OltListPage from "./features/olt/pages/OltListPage";
+import OntProfilesPage from "./features/olt/pages/OntProfilesPage";
 
 export const router = createBrowserRouter([
     //Rutas Publicas
@@ -126,6 +128,21 @@ export const router = createBrowserRouter([
                     {
                         index: true,
                         element: <AbonadosPage />
+                    }
+                ]
+            },
+            {
+                path: "/olt",
+                element: <MainLayout />,
+                errorElement: <ErrorGeneric />,
+                children: [
+                    {
+                        index: true,
+                        element: <OltListPage />
+                    },
+                    {
+                        path: ":oltId/perfiles",
+                        element: <OntProfilesPage />
                     }
                 ]
             },

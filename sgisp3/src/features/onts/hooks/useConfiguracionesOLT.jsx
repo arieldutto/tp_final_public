@@ -4,8 +4,9 @@ import { API_SGISP } from '../../../config';
 /**
  * Hook para obtener todas las configuraciones de OLT
  * (lineprofiles, srvprofiles, traffic_tables, traffic_mappings)
+ * @param {number|null} oltId - ID de la OLT. Si se proporciona, filtra los perfiles por OLT
  */
-export function useConfiguracionesOLT() {
+export function useConfiguracionesOLT(oltId = null) {
     const [lineprofiles, setLineprofiles] = useState([]);
     const [srvprofiles, setSrvprofiles] = useState([]);
     const [trafficTables, setTrafficTables] = useState([]);
@@ -19,9 +20,18 @@ export function useConfiguracionesOLT() {
                 setLoading(true);
                 setError(null);
 
+                // Construir URLs con olt_id si está disponible
+                const lineprofilesUrl = oltId
+                    ? `${API_SGISP}/lineprofiles?olt_id=${oltId}`
+                    : `${API_SGISP}/lineprofiles`;
+
+                const srvprofilesUrl = oltId
+                    ? `${API_SGISP}/srvprofiles?olt_id=${oltId}`
+                    : `${API_SGISP}/srvprofiles`;
+
                 const [lineprofilesRes, srvprofilesRes, trafficTablesRes, trafficMappingsRes] = await Promise.all([
-                    fetch(`${API_SGISP}/lineprofiles`),
-                    fetch(`${API_SGISP}/srvprofiles`),
+                    fetch(lineprofilesUrl),
+                    fetch(srvprofilesUrl),
                     fetch(`${API_SGISP}/traffic_tables`),
                     fetch(`${API_SGISP}/traffic_mappings`)
                 ]);
@@ -33,12 +43,15 @@ export function useConfiguracionesOLT() {
                     trafficMappingsRes.json()
                 ]);
 
-                if (lineprofilesRes.ok && lineprofilesData.data) {
-                    setLineprofiles(lineprofilesData.data);
+                // Manejar lineprofiles (puede venir como 'profiles' o 'data')
+                if (lineprofilesRes.ok) {
+                    const lineprofilesArray = lineprofilesData.profiles || lineprofilesData.data || [];
+                    setLineprofiles(lineprofilesArray);
                 } else {
                     throw new Error(lineprofilesData.error || 'Error al cargar lineprofiles');
                 }
 
+                // Manejar srvprofiles
                 if (srvprofilesRes.ok && srvprofilesData.data) {
                     setSrvprofiles(srvprofilesData.data);
                 } else {
@@ -65,7 +78,7 @@ export function useConfiguracionesOLT() {
         };
 
         cargarConfiguraciones();
-    }, []);
+    }, [oltId]);
 
     return {
         lineprofiles,

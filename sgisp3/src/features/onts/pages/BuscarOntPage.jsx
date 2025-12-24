@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { detectarONT, agregarONT } from '../services/ontService';
 import { useConfiguracionesOLT } from '../hooks/useConfiguracionesOLT';
+import { useOlts } from '../../olt/hooks/useOlts';
 import './buscaront.css';
 
 export default function BuscarOntPage() {
@@ -11,9 +12,13 @@ export default function BuscarOntPage() {
     const [error, setError] = useState(null);
     const [exito, setExito] = useState(null);
     const [registroExistente, setRegistroExistente] = useState(null);
+    const [selectedOltId, setSelectedOltId] = useState(null);
 
-    // Cargar configuraciones de OLT
-    const { lineprofiles, srvprofiles, trafficMappings, loading: loadingConfigs, error: errorConfigs } = useConfiguracionesOLT();
+    // Cargar lista de OLTs
+    const { olts, loading: loadingOlts } = useOlts();
+
+    // Cargar configuraciones de OLT (filtradas por olt_id si está seleccionado)
+    const { lineprofiles, srvprofiles, trafficMappings, loading: loadingConfigs, error: errorConfigs } = useConfiguracionesOLT(selectedOltId);
 
     // Estado del formulario
     const [formData, setFormData] = useState({
@@ -25,6 +30,18 @@ export default function BuscarOntPage() {
         ont_vlan: '300',
         mng_vlan: '200'
     });
+
+    // Manejar cambio de OLT seleccionada
+    const handleOltChange = (e) => {
+        const oltId = e.target.value ? parseInt(e.target.value) : null;
+        setSelectedOltId(oltId);
+        // Limpiar perfiles cuando cambia la OLT
+        setFormData(prev => ({
+            ...prev,
+            ont_lineprofile_id: '',
+            ont_srvprofile_id: ''
+        }));
+    };
 
     // Establecer valores por defecto cuando se cargan las configuraciones
     useEffect(() => {
@@ -230,6 +247,33 @@ export default function BuscarOntPage() {
                             </div>
                         )}
 
+                        {/* Selector de OLT (si hay múltiples OLTs) */}
+                        {!loadingOlts && olts.length > 0 && (
+                            <div className="mb-4">
+                                <label htmlFor="olt-select" className="form-label text-light">
+                                    <i className="bi bi-router me-2"></i>
+                                    Seleccionar OLT <span className="text-danger">*</span>
+                                </label>
+                                <select
+                                    className="form-control glass-input"
+                                    id="olt-select"
+                                    value={selectedOltId || ''}
+                                    onChange={handleOltChange}
+                                    required
+                                >
+                                    <option value="">Seleccione una OLT</option>
+                                    {olts.map(olt => (
+                                        <option key={olt.id} value={olt.id}>
+                                            {olt.nombre || `OLT ${olt.id}`} {olt.descripcion ? `- ${olt.descripcion}` : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                                <small className="form-text text-muted">
+                                    Seleccione la OLT para cargar los perfiles disponibles
+                                </small>
+                            </div>
+                        )}
+
                         {/* Botón de detección */}
                         {!ontDetectada && (
                             <div className="detectar-section">
@@ -238,7 +282,7 @@ export default function BuscarOntPage() {
                                     <button
                                         className="btn btn-primary glass-btn-primary btn-lg"
                                         onClick={handleDetectar}
-                                        disabled={detectando}
+                                        disabled={detectando || (olts.length > 0 && !selectedOltId)}
                                     >
                                         {detectando ? (
                                             <>
@@ -252,6 +296,12 @@ export default function BuscarOntPage() {
                                             </>
                                         )}
                                     </button>
+                                    {olts.length > 0 && !selectedOltId && (
+                                        <p className="text-warning mt-2">
+                                            <i className="bi bi-exclamation-triangle me-1"></i>
+                                            Debe seleccionar una OLT antes de detectar ONTs
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         )}
