@@ -98,13 +98,66 @@ function OltListPage() {
                                         <i className="bi bi-router me-2"></i>
                                         {olt.nombre || `OLT ${olt.id}`}
                                     </h5>
-                                    <p className="card-text">
-                                        <small className="text-muted">ID: {olt.id}</small>
-                                    </p>
-                                    {olt.descripcion && (
-                                        <p className="card-text">{olt.descripcion}</p>
-                                    )}
-                                    <div className="mt-3">
+
+                                    <div className="olt-info-details">
+                                        <p className="card-text mb-2">
+                                            <small className="text-muted">ID: {olt.id}</small>
+                                        </p>
+
+                                        {olt.descripcion && (
+                                            <p className="card-text mb-2">
+                                                <i className="bi bi-info-circle me-1 text-muted"></i>
+                                                {olt.descripcion}
+                                            </p>
+                                        )}
+
+                                        {olt.ip && (
+                                            <p className="card-text mb-2">
+                                                <i className="bi bi-globe me-1 text-primary"></i>
+                                                <strong>IP:</strong> <code className="text-light">{olt.ip}</code>
+                                            </p>
+                                        )}
+
+                                        {olt.usuario && (
+                                            <p className="card-text mb-2">
+                                                <i className="bi bi-person me-1 text-info"></i>
+                                                <strong>Usuario:</strong> <span className="text-light">{olt.usuario}</span>
+                                            </p>
+                                        )}
+
+                                        {olt.contraseña !== undefined && (
+                                            <p className="card-text mb-2">
+                                                <i className="bi bi-key me-1 text-warning"></i>
+                                                <strong>Contraseña:</strong>
+                                                <span className="text-light ms-1">
+                                                    {olt.contraseña ? '••••••••' : 'No configurada'}
+                                                </span>
+                                            </p>
+                                        )}
+
+                                        {olt.puerto && (
+                                            <p className="card-text mb-2">
+                                                <i className="bi bi-ethernet me-1 text-success"></i>
+                                                <strong>Puerto:</strong> <span className="text-light">{olt.puerto}</span>
+                                            </p>
+                                        )}
+
+                                        {olt.modelo && (
+                                            <p className="card-text mb-2">
+                                                <i className="bi bi-cpu me-1 text-secondary"></i>
+                                                <strong>Modelo:</strong> <span className="text-light">{olt.modelo}</span>
+                                            </p>
+                                        )}
+
+                                        {olt.ubicacion && (
+                                            <p className="card-text mb-2">
+                                                <i className="bi bi-geo-alt me-1 text-danger"></i>
+                                                <strong>Ubicación:</strong> <span className="text-light">{olt.ubicacion}</span>
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="mt-3 pt-3 border-top border-secondary">
                                         <a
                                             href={`/olt/${olt.id}/perfiles`}
                                             className="btn btn-primary btn-sm me-2"
