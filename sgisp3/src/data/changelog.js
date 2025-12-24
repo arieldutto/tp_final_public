@@ -17,7 +17,7 @@ export const CHANGELOG = [
                 type: "improvement",
                 icon: "bi-database",
                 title: "Optimización de Consultas al ACS",
-                description: "Frecuencia de actualización de datos desde el ACS reducida de 5 minutos a 1 hora para disminuir la carga en el servidor sin afectar la funcionalidad del sistema"
+                description: "Frecuencia de actualización de datos desde el ACS reducida de 5 minutos a 6 horas (4 consultas por día) para disminuir significativamente la carga en el servidor sin afectar la funcionalidad del sistema"
             }
         ]
     },
