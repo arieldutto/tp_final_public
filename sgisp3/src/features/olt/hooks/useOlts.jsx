@@ -39,7 +39,12 @@ export function useOlts() {
                     }
                 } catch (networkError) {
                     // Error de red (CORS, conexión, etc.) - no es un error crítico
-                    console.warn('No se pudo conectar al endpoint /olts (puede que no exista aún):', networkError.message);
+                    // Si es un error de CORS, el endpoint probablemente no está configurado aún
+                    if (networkError.message.includes('CORS') || networkError.message.includes('fetch')) {
+                        console.info('Endpoint /olts no disponible o bloqueado por CORS. Sistema funcionará sin selección de OLT (modo compatibilidad).');
+                    } else {
+                        console.warn('No se pudo conectar al endpoint /olts:', networkError.message);
+                    }
                     setOlts([]);
                 }
             } catch (err) {
