@@ -80,17 +80,17 @@ function EditarAbonadoModal({ isOpen, onClose, abonado, onSuccess }) {
         <div className="editar-abonado-modal-overlay" onClick={onClose}>
             <div className="editar-abonado-modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="editar-abonado-modal-header">
-                    <div className="d-flex align-items-center">
-                        <div className="editar-abonado-modal-icon me-3">
+                    <div className="d-flex align-items-center flex-grow-1">
+                        <div className="editar-abonado-modal-icon me-3 flex-shrink-0">
                             <i className="bi bi-pencil-square"></i>
                         </div>
-                        <div>
+                        <div className="flex-grow-1 min-w-0">
                             <h2 className="mb-0">Editar Abonado</h2>
-                            <small className="text-muted">Modifique los datos que desee actualizar</small>
+                            <small className="text-muted d-block">Modifique los datos que desee actualizar</small>
                         </div>
                     </div>
                     <button
-                        className="editar-abonado-modal-close"
+                        className="editar-abonado-modal-close flex-shrink-0"
                         onClick={onClose}
                         aria-label="Cerrar"
                     >
