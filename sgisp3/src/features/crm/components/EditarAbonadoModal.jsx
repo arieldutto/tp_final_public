@@ -120,146 +120,144 @@ function EditarAbonadoModal({ isOpen, onClose, abonado, onSuccess }) {
                     )}
 
                     <form onSubmit={handleSubmit} className="editar-abonado-form">
-                        <div className="editar-abonado-form-content">
-                            <div className="row g-3">
-                                {/* Razón Social / Nombre */}
-                                <div className="col-md-6">
-                                    <label htmlFor="Razonsocial" className="form-label">
-                                        <i className="bi bi-person-fill me-2"></i>
-                                        Razón Social / Nombre
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control glass-input"
-                                        id="Razonsocial"
-                                        name="Razonsocial"
-                                        value={formData.Razonsocial}
-                                        onChange={handleChange}
-                                        placeholder="Ingrese el nombre o razón social"
-                                    />
-                                </div>
+                        <div className="row g-3">
+                            {/* Razón Social / Nombre */}
+                            <div className="col-md-6">
+                                <label htmlFor="Razonsocial" className="form-label">
+                                    <i className="bi bi-person-fill me-2"></i>
+                                    Razón Social / Nombre
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control glass-input"
+                                    id="Razonsocial"
+                                    name="Razonsocial"
+                                    value={formData.Razonsocial}
+                                    onChange={handleChange}
+                                    placeholder="Ingrese el nombre o razón social"
+                                />
+                            </div>
 
-                                {/* Número de Cliente */}
-                                <div className="col-md-6">
-                                    <label htmlFor="NumeroCliente" className="form-label">
-                                        <i className="bi bi-person-badge me-2"></i>
-                                        Número de Cliente
-                                    </label>
-                                    <input
-                                        type="number"
-                                        className="form-control glass-input"
-                                        id="NumeroCliente"
-                                        name="NumeroCliente"
-                                        value={formData.NumeroCliente}
-                                        onChange={handleChange}
-                                        min="1"
-                                        placeholder="Número único de cliente"
-                                    />
-                                    <small className="form-help-text">Debe ser un número único en el sistema</small>
-                                </div>
+                            {/* Número de Cliente */}
+                            <div className="col-md-6">
+                                <label htmlFor="NumeroCliente" className="form-label">
+                                    <i className="bi bi-person-badge me-2"></i>
+                                    Número de Cliente
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control glass-input"
+                                    id="NumeroCliente"
+                                    name="NumeroCliente"
+                                    value={formData.NumeroCliente}
+                                    onChange={handleChange}
+                                    min="1"
+                                    placeholder="Número único de cliente"
+                                />
+                                <small className="form-help-text">Debe ser un número único en el sistema</small>
+                            </div>
 
-                                {/* Domicilio */}
-                                <div className="col-md-12">
-                                    <label htmlFor="Domicilio" className="form-label">
-                                        <i className="bi bi-geo-alt-fill me-2"></i>
-                                        Domicilio
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control glass-input"
-                                        id="Domicilio"
-                                        name="Domicilio"
-                                        value={formData.Domicilio}
-                                        onChange={handleChange}
-                                        placeholder="Calle y número"
-                                    />
-                                </div>
+                            {/* Domicilio */}
+                            <div className="col-md-12">
+                                <label htmlFor="Domicilio" className="form-label">
+                                    <i className="bi bi-geo-alt-fill me-2"></i>
+                                    Domicilio
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control glass-input"
+                                    id="Domicilio"
+                                    name="Domicilio"
+                                    value={formData.Domicilio}
+                                    onChange={handleChange}
+                                    placeholder="Calle y número"
+                                />
+                            </div>
 
-                                {/* Localidad */}
-                                <div className="col-md-6">
-                                    <label htmlFor="Localidad" className="form-label">
-                                        <i className="bi bi-building me-2"></i>
-                                        Localidad
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control glass-input"
-                                        id="Localidad"
-                                        name="Localidad"
-                                        value={formData.Localidad}
-                                        onChange={handleChange}
-                                        placeholder="Coronel Baigorria, Cordoba, Argentina"
-                                    />
-                                    <small className="form-help-text">Formato: Localidad, Provincia, País</small>
-                                </div>
+                            {/* Localidad */}
+                            <div className="col-md-6">
+                                <label htmlFor="Localidad" className="form-label">
+                                    <i className="bi bi-building me-2"></i>
+                                    Localidad
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control glass-input"
+                                    id="Localidad"
+                                    name="Localidad"
+                                    value={formData.Localidad}
+                                    onChange={handleChange}
+                                    placeholder="Coronel Baigorria, Cordoba, Argentina"
+                                />
+                                <small className="form-help-text">Formato: Localidad, Provincia, País</small>
+                            </div>
 
-                                {/* DNI */}
-                                <div className="col-md-6">
-                                    <label htmlFor="DNI" className="form-label">
-                                        <i className="bi bi-card-text me-2"></i>
-                                        DNI / CUIT
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control glass-input"
-                                        id="DNI"
-                                        name="DNI"
-                                        value={formData.DNI}
-                                        onChange={handleChange}
-                                        placeholder="DNI o CUIT del cliente"
-                                    />
-                                </div>
+                            {/* DNI */}
+                            <div className="col-md-6">
+                                <label htmlFor="DNI" className="form-label">
+                                    <i className="bi bi-card-text me-2"></i>
+                                    DNI / CUIT
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control glass-input"
+                                    id="DNI"
+                                    name="DNI"
+                                    value={formData.DNI}
+                                    onChange={handleChange}
+                                    placeholder="DNI o CUIT del cliente"
+                                />
+                            </div>
 
-                                {/* Teléfono */}
-                                <div className="col-md-6">
-                                    <label htmlFor="Telefono" className="form-label">
-                                        <i className="bi bi-telephone-fill me-2"></i>
-                                        Teléfono
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        className="form-control glass-input"
-                                        id="Telefono"
-                                        name="Telefono"
-                                        value={formData.Telefono}
-                                        onChange={handleChange}
-                                        placeholder="Teléfono de contacto"
-                                    />
-                                </div>
+                            {/* Teléfono */}
+                            <div className="col-md-6">
+                                <label htmlFor="Telefono" className="form-label">
+                                    <i className="bi bi-telephone-fill me-2"></i>
+                                    Teléfono
+                                </label>
+                                <input
+                                    type="tel"
+                                    className="form-control glass-input"
+                                    id="Telefono"
+                                    name="Telefono"
+                                    value={formData.Telefono}
+                                    onChange={handleChange}
+                                    placeholder="Teléfono de contacto"
+                                />
+                            </div>
 
-                                {/* Email */}
-                                <div className="col-md-6">
-                                    <label htmlFor="Email" className="form-label">
-                                        <i className="bi bi-envelope-fill me-2"></i>
-                                        Email
-                                    </label>
-                                    <input
-                                        type="email"
-                                        className="form-control glass-input"
-                                        id="Email"
-                                        name="Email"
-                                        value={formData.Email}
-                                        onChange={handleChange}
-                                        placeholder="email@example.com"
-                                    />
-                                    <small className="form-help-text">Formato válido requerido</small>
-                                </div>
+                            {/* Email */}
+                            <div className="col-md-6">
+                                <label htmlFor="Email" className="form-label">
+                                    <i className="bi bi-envelope-fill me-2"></i>
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    className="form-control glass-input"
+                                    id="Email"
+                                    name="Email"
+                                    value={formData.Email}
+                                    onChange={handleChange}
+                                    placeholder="email@example.com"
+                                />
+                                <small className="form-help-text">Formato válido requerido</small>
+                            </div>
 
-                                {/* Fecha de Alta */}
-                                <div className="col-md-6">
-                                    <label htmlFor="FechaAlta" className="form-label">
-                                        <i className="bi bi-calendar-event me-2"></i>
-                                        Fecha de Alta
-                                    </label>
-                                    <input
-                                        type="date"
-                                        className="form-control glass-input"
-                                        id="FechaAlta"
-                                        name="FechaAlta"
-                                        value={formData.FechaAlta}
-                                        onChange={handleChange}
-                                    />
-                                </div>
+                            {/* Fecha de Alta */}
+                            <div className="col-md-6">
+                                <label htmlFor="FechaAlta" className="form-label">
+                                    <i className="bi bi-calendar-event me-2"></i>
+                                    Fecha de Alta
+                                </label>
+                                <input
+                                    type="date"
+                                    className="form-control glass-input"
+                                    id="FechaAlta"
+                                    name="FechaAlta"
+                                    value={formData.FechaAlta}
+                                    onChange={handleChange}
+                                />
                             </div>
                         </div>
 
@@ -295,6 +293,7 @@ function EditarAbonadoModal({ isOpen, onClose, abonado, onSuccess }) {
                 </div>
             </div>
         </div>
+        </div >
     );
 }
 
