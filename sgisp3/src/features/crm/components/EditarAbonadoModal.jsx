@@ -293,7 +293,6 @@ function EditarAbonadoModal({ isOpen, onClose, abonado, onSuccess }) {
                 </div>
             </div>
         </div>
-        </div >
     );
 }
 
