@@ -132,10 +132,49 @@
 /* Modal Body */
 .editar-abonado-modal-body {
     padding: 2rem;
-    overflow-y: auto;
     flex: 1;
     min-height: 0;
-    max-height: calc(95vh - 200px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Form container */
+.editar-abonado-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Form content - área con scroll */
+.editar-abonado-form-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+    margin-right: -0.5rem;
+    min-height: 0;
+}
+
+/* Scroll personalizado para el form content */
+.editar-abonado-form-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.editar-abonado-form-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.editar-abonado-form-content::-webkit-scrollbar-thumb {
+    background: rgba(103, 163, 255, 0.5);
+    border-radius: 10px;
+}
+
+.editar-abonado-form-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(103, 163, 255, 0.7);
 }
 
 /* Inputs con estilo glassmorphism */
@@ -191,13 +230,15 @@
     line-height: 1.4;
 }
 
-/* Botones */
+/* Botones - siempre visibles fuera del scroll */
 .editar-abonado-modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
     padding-top: 1.5rem;
+    margin-top: 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
 
 .glass-btn,
@@ -290,7 +331,6 @@
 
     .editar-abonado-modal-body {
         padding: 1.5rem;
-        max-height: calc(95vh - 180px);
     }
 
     .editar-abonado-modal-actions {
