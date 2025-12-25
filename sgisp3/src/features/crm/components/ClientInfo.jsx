@@ -58,7 +58,7 @@ function clientInfo({ datos, idCliente, onUpdate }) {
 
     return (
         <div className="client-info-container">
-            <div className="row g-3" style={{ height: '100%' }}>
+            <div className="row g-3">
                 {/* Tarjeta de Información del Cliente */}
                 <div className="col-lg-5" style={{ display: 'flex', flexDirection: 'column' }}>
                     <div className="card client-info-card shadow-sm" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

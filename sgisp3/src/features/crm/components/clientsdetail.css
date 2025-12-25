@@ -38,17 +38,18 @@
 
 /* Contenedor principal de detalles del cliente */
 .client-detail-card {
-    background: linear-gradient(
-        135deg,
-        rgba(103, 163, 255, 0.35) 0%,
-        rgba(75, 132, 255, 0.30) 100%
-    );
+    background: linear-gradient(135deg,
+            rgba(103, 163, 255, 0.35) 0%,
+            rgba(75, 132, 255, 0.30) 100%);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 16px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
 }
 
 /* Contenedor de pestañas */
@@ -56,11 +57,9 @@
     display: flex;
     gap: 0.5rem;
     padding: 1rem 1.5rem;
-    background: linear-gradient(
-        135deg,
-        rgba(67, 97, 238, 0.25) 0%,
-        rgba(103, 163, 255, 0.20) 100%
-    );
+    background: linear-gradient(135deg,
+            rgba(67, 97, 238, 0.25) 0%,
+            rgba(103, 163, 255, 0.20) 100%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     overflow-x: auto;
 }
@@ -91,12 +90,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.1),
-        transparent
-    );
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
     transition: left 0.3s ease;
 }
 
@@ -112,11 +109,9 @@
 }
 
 .client-detail-tab.active {
-    background: linear-gradient(
-        135deg,
-        rgba(67, 97, 238, 0.5) 0%,
-        rgba(103, 163, 255, 0.45) 100%
-    );
+    background: linear-gradient(135deg,
+            rgba(67, 97, 238, 0.5) 0%,
+            rgba(103, 163, 255, 0.45) 100%);
     border-color: rgba(255, 255, 255, 0.4);
     color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
@@ -130,11 +125,9 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(
-        90deg,
-        rgba(103, 163, 255, 0.8),
-        rgba(67, 97, 238, 0.8)
-    );
+    background: linear-gradient(90deg,
+            rgba(103, 163, 255, 0.8),
+            rgba(67, 97, 238, 0.8));
     border-radius: 2px 2px 0 0;
 }
 
@@ -145,12 +138,13 @@
 /* Contenedor de contenido */
 .client-detail-content {
     padding: 1rem;
-    min-height: 200px;
-    max-height: calc(100vh - 250px);
+    min-height: 300px;
+    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 /* Scroll personalizado */
@@ -178,17 +172,22 @@
         padding: 0.75rem 1rem;
         gap: 0.5rem;
     }
-    
+
     .client-detail-tab {
         padding: 0.6rem 1rem;
         font-size: 0.85rem;
     }
-    
+
     .client-detail-tab i {
         font-size: 0.9rem;
     }
-    
+
     .client-detail-content {
         padding: 1rem;
+        min-height: 300px;
+    }
+
+    .client-detail-card {
+        min-height: 300px;
     }
 }
