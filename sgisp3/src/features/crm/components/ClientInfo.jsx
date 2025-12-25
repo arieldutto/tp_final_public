@@ -105,93 +105,120 @@ function clientInfo({ datos, idCliente, onUpdate }) {
                                     </div>
                                     <div className="info-content">
                                         <span className="info-label">ID Cliente</span>
-                                        <span className="info-value">{idCliente || 'N/A'}</span>
+                                        <span className="info-value">{idCliente || datos?.id || 'N/A'}</span>
                                     </div>
                                 </div>
 
                                 {/* Número de Cliente */}
-                                {datos?.NumeroCliente && (
-                                    <div className="info-item">
-                                        <div className="info-icon">
-                                            <i className="bi bi-person-badge"></i>
-                                        </div>
-                                        <div className="info-content">
-                                            <span className="info-label">Número de Cliente</span>
-                                            <span className="info-value">{datos.NumeroCliente}</span>
-                                        </div>
+                                <div className="info-item">
+                                    <div className="info-icon">
+                                        <i className="bi bi-person-badge"></i>
                                     </div>
-                                )}
+                                    <div className="info-content">
+                                        <span className="info-label">Número de Cliente</span>
+                                        <span className="info-value">{datos?.NumeroCliente || 'N/A'}</span>
+                                    </div>
+                                </div>
+
+                                {/* Razón Social - Mostrar siempre */}
+                                <div className="info-item info-item-full">
+                                    <div className="info-icon">
+                                        <i className="bi bi-person-fill"></i>
+                                    </div>
+                                    <div className="info-content">
+                                        <span className="info-label">Razón Social / Nombre</span>
+                                        <span className="info-value">{datos?.Razonsocial || 'Sin nombre'}</span>
+                                    </div>
+                                </div>
+
+                                {/* Domicilio */}
+                                <div className="info-item info-item-full">
+                                    <div className="info-icon">
+                                        <i className="bi bi-geo-alt-fill"></i>
+                                    </div>
+                                    <div className="info-content">
+                                        <span className="info-label">Domicilio</span>
+                                        <span className="info-value">{datos?.Domicilio || 'No especificado'}</span>
+                                    </div>
+                                </div>
+
+                                {/* Localidad */}
+                                <div className="info-item info-item-full">
+                                    <div className="info-icon">
+                                        <i className="bi bi-building"></i>
+                                    </div>
+                                    <div className="info-content">
+                                        <span className="info-label">Localidad</span>
+                                        <span className="info-value">{datos?.Localidad || 'No especificada'}</span>
+                                    </div>
+                                </div>
 
                                 {/* Teléfono */}
-                                {datos?.Telefono && (
-                                    <div className="info-item">
-                                        <div className="info-icon">
-                                            <i className="bi bi-telephone-fill"></i>
-                                        </div>
-                                        <div className="info-content">
-                                            <span className="info-label">Teléfono</span>
+                                <div className="info-item">
+                                    <div className="info-icon">
+                                        <i className="bi bi-telephone-fill"></i>
+                                    </div>
+                                    <div className="info-content">
+                                        <span className="info-label">Teléfono</span>
+                                        {datos?.Telefono ? (
                                             <a href={`tel:${datos.Telefono}`} className="info-value info-link">
                                                 {datos.Telefono}
                                             </a>
-                                        </div>
+                                        ) : (
+                                            <span className="info-value text-muted">No especificado</span>
+                                        )}
                                     </div>
-                                )}
+                                </div>
 
                                 {/* Email */}
-                                {datos?.Email && (
-                                    <div className="info-item">
-                                        <div className="info-icon">
-                                            <i className="bi bi-envelope-fill"></i>
-                                        </div>
-                                        <div className="info-content">
-                                            <span className="info-label">Email</span>
+                                <div className="info-item">
+                                    <div className="info-icon">
+                                        <i className="bi bi-envelope-fill"></i>
+                                    </div>
+                                    <div className="info-content">
+                                        <span className="info-label">Email</span>
+                                        {datos?.Email ? (
                                             <a href={`mailto:${datos.Email}`} className="info-value info-link">
                                                 {datos.Email}
                                             </a>
-                                        </div>
+                                        ) : (
+                                            <span className="info-value text-muted">No especificado</span>
+                                        )}
                                     </div>
-                                )}
+                                </div>
 
                                 {/* DNI */}
-                                {datos?.DNI && (
-                                    <div className="info-item">
-                                        <div className="info-icon">
-                                            <i className="bi bi-card-text"></i>
-                                        </div>
-                                        <div className="info-content">
-                                            <span className="info-label">DNI / CUIT</span>
-                                            <span className="info-value">{datos.DNI}</span>
-                                        </div>
+                                <div className="info-item">
+                                    <div className="info-icon">
+                                        <i className="bi bi-card-text"></i>
                                     </div>
-                                )}
-
-                                {/* Domicilio */}
-                                {datos?.Domicilio && (
-                                    <div className="info-item info-item-full">
-                                        <div className="info-icon">
-                                            <i className="bi bi-geo-alt-fill"></i>
-                                        </div>
-                                        <div className="info-content">
-                                            <span className="info-label">Domicilio</span>
-                                            <span className="info-value">{datos.Domicilio}</span>
-                                        </div>
+                                    <div className="info-content">
+                                        <span className="info-label">DNI / CUIT</span>
+                                        <span className="info-value">{datos?.DNI || 'No especificado'}</span>
                                     </div>
-                                )}
+                                </div>
 
-                                {/* Localidad */}
-                                {datos?.Localidad && (
-                                    <div className="info-item">
-                                        <div className="info-icon">
-                                            <i className="bi bi-building"></i>
-                                        </div>
-                                        <div className="info-content">
-                                            <span className="info-label">Localidad</span>
-                                            <span className="info-value">{datos.Localidad}</span>
-                                        </div>
+                                {/* Fecha de Alta */}
+                                <div className="info-item">
+                                    <div className="info-icon">
+                                        <i className="bi bi-calendar-event"></i>
                                     </div>
-                                )}
+                                    <div className="info-content">
+                                        <span className="info-label">Fecha de Alta</span>
+                                        <span className="info-value">
+                                            {datos?.FechaAlta
+                                                ? new Date(datos.FechaAlta).toLocaleDateString('es-AR', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })
+                                                : 'No especificada'
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
 
-                                {/* Provincia */}
+                                {/* Campos adicionales si existen (Provincia, Código Postal, etc.) */}
                                 {datos?.Provincia && (
                                     <div className="info-item">
                                         <div className="info-icon">
@@ -204,7 +231,6 @@ function clientInfo({ datos, idCliente, onUpdate }) {
                                     </div>
                                 )}
 
-                                {/* Código Postal */}
                                 {datos?.CodigoPostal && (
                                     <div className="info-item">
                                         <div className="info-icon">
