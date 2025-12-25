@@ -19,6 +19,10 @@ export async function crearAbonado(datosAbonado) {
             payload.Telefono = datosAbonado.Telefono;
         }
 
+        if (datosAbonado.Email && datosAbonado.Email.trim()) {
+            payload.Email = datosAbonado.Email;
+        }
+
         if (datosAbonado.DNI && datosAbonado.DNI.trim()) {
             payload.DNI = datosAbonado.DNI;
         }
@@ -27,7 +31,7 @@ export async function crearAbonado(datosAbonado) {
             payload.FechaAlta = datosAbonado.FechaAlta;
         }
 
-        const response = await fetch(`${API_SGISP}/crear_abonado`, {
+        const response = await fetch(`${API_SGISP}/abonados`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -37,39 +41,43 @@ export async function crearAbonado(datosAbonado) {
 
         const data = await response.json();
 
-        // Manejar diferentes códigos de estado
+        // Manejar diferentes códigos de estado según documentación
         if (response.status === 201) {
-            // Éxito
+            // Éxito - Recurso creado
             return {
                 ok: true,
                 data: data.abonado,
-                message: data.message
+                message: data.message || "Abonado creado exitosamente"
             };
         } else if (response.status === 400) {
             // Error de validación
-            const errorMsg = data.campos 
-                ? `Campos requeridos faltantes: ${data.campos.join(", ")}`
-                : data.error || "Error en los datos enviados";
+            let errorMsg = data.error || "Error en los datos enviados";
+            if (data.campos && Array.isArray(data.campos)) {
+                errorMsg = `Campos requeridos faltantes: ${data.campos.join(", ")}`;
+            }
             return {
                 ok: false,
-                error: errorMsg
+                error: errorMsg,
+                campos: data.campos || null
             };
         } else if (response.status === 409) {
             // Conflicto - Número de cliente duplicado
             return {
                 ok: false,
-                error: `El número de cliente ${data.numero_cliente || datosAbonado.NumeroCliente} ya existe`
+                error: data.error || `El número de cliente ${data.numero_cliente || datosAbonado.NumeroCliente} ya existe`,
+                numero_cliente: data.numero_cliente || datosAbonado.NumeroCliente
             };
         } else if (response.status === 405) {
             return {
                 ok: false,
-                error: "Método no permitido"
+                error: data.error || "Método no permitido. Use POST"
             };
         } else {
             // Otros errores (500, etc.)
             return {
                 ok: false,
-                error: data.error || `Error ${response.status}: ${response.statusText}`
+                error: data.error || `Error ${response.status}: ${response.statusText}`,
+                detalle: data.detalle || null
             };
         }
     } catch (error) {
@@ -103,31 +111,35 @@ export async function modificarAbonado(abonadoId, datosActualizacion) {
 
         // Preparar payload solo con campos que tienen valor
         const payload = {};
-        
+
         if (datosActualizacion.Razonsocial !== undefined && datosActualizacion.Razonsocial !== null && datosActualizacion.Razonsocial !== '') {
             payload.Razonsocial = datosActualizacion.Razonsocial;
         }
-        
+
         if (datosActualizacion.NumeroCliente !== undefined && datosActualizacion.NumeroCliente !== null && datosActualizacion.NumeroCliente !== '') {
             payload.NumeroCliente = parseInt(datosActualizacion.NumeroCliente);
         }
-        
+
         if (datosActualizacion.Domicilio !== undefined && datosActualizacion.Domicilio !== null && datosActualizacion.Domicilio !== '') {
             payload.Domicilio = datosActualizacion.Domicilio;
         }
-        
+
         if (datosActualizacion.Localidad !== undefined && datosActualizacion.Localidad !== null && datosActualizacion.Localidad !== '') {
             payload.Localidad = datosActualizacion.Localidad;
         }
-        
+
         if (datosActualizacion.Telefono !== undefined && datosActualizacion.Telefono !== null && datosActualizacion.Telefono !== '') {
             payload.Telefono = datosActualizacion.Telefono;
         }
-        
+
+        if (datosActualizacion.Email !== undefined && datosActualizacion.Email !== null && datosActualizacion.Email !== '') {
+            payload.Email = datosActualizacion.Email;
+        }
+
         if (datosActualizacion.DNI !== undefined && datosActualizacion.DNI !== null && datosActualizacion.DNI !== '') {
             payload.DNI = datosActualizacion.DNI;
         }
-        
+
         if (datosActualizacion.FechaAlta !== undefined && datosActualizacion.FechaAlta !== null && datosActualizacion.FechaAlta !== '') {
             payload.FechaAlta = datosActualizacion.FechaAlta;
         }

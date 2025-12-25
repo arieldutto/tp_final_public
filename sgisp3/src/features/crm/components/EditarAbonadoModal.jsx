@@ -14,6 +14,7 @@ function EditarAbonadoModal({ isOpen, onClose, abonado, onSuccess }) {
         Domicilio: '',
         Localidad: '',
         Telefono: '',
+        Email: '',
         DNI: '',
         FechaAlta: ''
     });
@@ -27,6 +28,7 @@ function EditarAbonadoModal({ isOpen, onClose, abonado, onSuccess }) {
                 Domicilio: abonado.Domicilio || '',
                 Localidad: abonado.Localidad || '',
                 Telefono: abonado.Telefono || '',
+                Email: abonado.Email || '',
                 DNI: abonado.DNI || '',
                 FechaAlta: abonado.FechaAlta || ''
             });
@@ -222,6 +224,24 @@ function EditarAbonadoModal({ isOpen, onClose, abonado, onSuccess }) {
                                     onChange={handleChange}
                                     placeholder="Teléfono de contacto"
                                 />
+                            </div>
+
+                            {/* Email */}
+                            <div className="col-md-6">
+                                <label htmlFor="Email" className="form-label">
+                                    <i className="bi bi-envelope-fill me-2"></i>
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    className="form-control glass-input"
+                                    id="Email"
+                                    name="Email"
+                                    value={formData.Email}
+                                    onChange={handleChange}
+                                    placeholder="email@example.com"
+                                />
+                                <small className="form-help-text">Formato válido requerido</small>
                             </div>
 
                             {/* Fecha de Alta */}

@@ -12,7 +12,10 @@ export function useAbonados() {
         "Razonsocial",
         "Domicilio",
         "Localidad",
-        "Telefono"
+        "Telefono",
+        "Email",
+        "DNI",
+        "FechaAlta"
     ];
 
     useEffect(() => {

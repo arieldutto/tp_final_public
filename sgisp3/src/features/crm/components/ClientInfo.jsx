@@ -137,6 +137,34 @@ function clientInfo({ datos, idCliente, onUpdate }) {
                                     </div>
                                 )}
 
+                                {/* Email */}
+                                {datos?.Email && (
+                                    <div className="info-item">
+                                        <div className="info-icon">
+                                            <i className="bi bi-envelope-fill"></i>
+                                        </div>
+                                        <div className="info-content">
+                                            <span className="info-label">Email</span>
+                                            <a href={`mailto:${datos.Email}`} className="info-value info-link">
+                                                {datos.Email}
+                                            </a>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* DNI */}
+                                {datos?.DNI && (
+                                    <div className="info-item">
+                                        <div className="info-icon">
+                                            <i className="bi bi-card-text"></i>
+                                        </div>
+                                        <div className="info-content">
+                                            <span className="info-label">DNI / CUIT</span>
+                                            <span className="info-value">{datos.DNI}</span>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Domicilio */}
                                 {datos?.Domicilio && (
                                     <div className="info-item info-item-full">
